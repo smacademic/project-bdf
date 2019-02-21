@@ -1,11 +1,16 @@
-# project-bdf
+# Reddit Transcription Bot
+
+The Reddit Transcription Bot (final name pending) transcribes text from images posted on Reddit on request. The images may be part of a post on a subreddit, or linked to within a comment. The bot will reply with a comment containing an attempted transcription of the text contained with the image.
+
+This Reddit Bot is a part of a project created by 3 students in CS 298-01 at Western Connecticut State University. It is currently still within the initial planning process.
 
 ### Team Members
-Calebe De Aquino
-Brian Bacon
-Andrew Figueroa
+- Calebe De Aquino
+- Brian Bacon
+- Andrew Figueroa
 
-### Project Idea
+### Original Project Idea
+
 **High Level Description:** Social Media Bot
 
 **Minimum Requirements:**
