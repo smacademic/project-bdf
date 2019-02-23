@@ -15,11 +15,12 @@ This Reddit Bot is a part of a project created by 3 students in CS 298-01 at Wes
 
 **Minimum Requirements:**
 
-- Ingest content from a social media platform using an API
-- Analyze content (identify relevant text). Involves parsing what is likely to be a JSON object
-- Generate a post based on the analyzed content. The post should have some markup other than text (hashtags, URLs, Markdown, etc)
-- Post to the social media site - Ideally. It is possible that external issues may prevent this from happening, in which case a simulated post is sufficient.
+1. Ingest content from a social media platform using an API
+2. Analyze content (identify relevant text). Involves parsing what is likely to be a JSON object
+3. Generate a post based on the analyzed content. The post should have some markup other than text (hashtags, URLs, Markdown, etc)
+4. Post to the social media site - Ideally. It is possible that external issues may prevent this from happening, in which case a simulated post is sufficient.
 
+The project as currently defined meets requirements 1, 2, and 4. Requirement 3 is partially met (a post is generated, but it does not have any markup). This requirement can be fully met with some extentions to the project, such as identifying any URLS and turning them into hyperlinks, or possibly idenitying that the picutre is a screenshot of a Twitter post and linking to the original post on Twitter.
 
 **Likely Social Media Platform:** Reddit
 
@@ -27,3 +28,8 @@ Reddit has a relatively generous public API and is friendly towards non-maliciou
 
 [Reddit API](https://www.reddit.com/dev/api)
 [Reddit API Guidlines](https://github.com/reddit-archive/reddit/wiki/API)
+
+## Dependencies (tentative)
+
+- [Python Reddit API Wrapper (PRAW)](https://github.com/praw-dev/praw)
+- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract)
