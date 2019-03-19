@@ -3,7 +3,6 @@
 # This python script identified comments that should eventually be processed by our bot
 # within a specific set of subreddits
 
-import sys
 import praw
 from praw.models import Comment
 import re
@@ -26,13 +25,34 @@ numRequests = 0 # number of comments with KEYWORD
 def extractURL(comment):
     commentSplit = re.split('\s', comment)
     
+    imageList = []
+
     for word in commentSplit:
-        if re.search('(^.*\.jpg\)$)', word) != None:
-            return word
-        elif re.search('(^.*\.png\)$)', word) != None:
-            return word
-        elif re.search('(^.*\.tif\)$)', word) != None:
-            return word
+        #these variables store the image URL if it is enclosed within parentheses
+        jpgWithParens = re.search('\((.*\.jpg)\)$', word)
+        pngWithParens = re.search('\((.*\.png)\)$', word)
+        tifWithParens = re.search('\((.*\.tif)\)$', word)
+        
+        #these variables store the image URL if it is not enclosed with any special characters
+        jpg = re.search('(.*\.jpg$)', word)
+        png = re.search('.*\.png$', word)
+        tif = re.search('.*\.tif$', word)
+        
+        if jpgWithParens != None:
+            imageList.append(jpgWithParens.group(1))
+        elif pngWithParens != None:
+            imageList.append(pngWithParens.group(1))
+        elif tifWithParens != None:
+            imageList.append(tifWithParens.group(1))
+        elif jpg != None:
+            imageList.append(jpg.group(1))
+        elif png != None:
+            imageList.append(png.group(1))
+        elif tif != None:
+            imageList.append(tif.group(1))
+    
+    if imageList:
+        return imageList
 
 for submission in reddit.subreddit(SUBREDDIT).hot(limit=10):
     # this code is not well-optimized for deeply nested comments
