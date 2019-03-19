@@ -13,8 +13,8 @@ SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
                       # can be specified by placing a '+' between them)
 
 # build Reddit instance using TextifyReddit's credentials
-reddit = praw.Reddit(client_id='nDjE25Frylfv1A', # 14 characters
-                     client_secret='temPUBqUQTf_CS7xJ_rg3oliCu8', # 27 characters
+reddit = praw.Reddit(client_id='', # 14 characters
+                     client_secret='', # 27 characters
                      user_agent='script:smacademic.project-bdf.textifyreddit:v0.0.20190308 (by /u/TextifyReddit)')
 
 
@@ -26,22 +26,13 @@ numRequests = 0 # number of comments with KEYWORD
 def extractURL(comment):
     commentSplit = re.split('\s', comment)
     
-    imageList = []
-
     for word in commentSplit:
-        jpg = re.search('\((.*\.jpg)\)$', word)
-        png = re.search('\((.*\.png)\)$', word)
-        tif = re.search('\((.*\.tif)\)$', word)
-        
-        if jpg != None:
-            imageList.append(jpg.group(1))
-        elif png != None:
-            imageList.append(png.group(1))
-        elif tif != None:
-            imageList.append(tif.group(1))
-    
-    if imageList:
-        return imageList
+        if re.search('(^.*\.jpg\)$)', word) != None:
+            return word
+        elif re.search('(^.*\.png\)$)', word) != None:
+            return word
+        elif re.search('(^.*\.tif\)$)', word) != None:
+            return word
 
 for submission in reddit.subreddit(SUBREDDIT).hot(limit=10):
     # this code is not well-optimized for deeply nested comments
