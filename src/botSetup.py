@@ -1,7 +1,6 @@
 # botSetup.py
 
 import praw
-from praw.models import Comment
 import authentication # contains credentials for TextifyReddit account
 import re # regex library
 
@@ -24,12 +23,14 @@ def extractURL(comment):
     imageList = []
 
     for word in commentSplit:
-        #these variables store the image URL if it is enclosed within parentheses
+        # these variables store the image URL if it is enclosed within
+        # parentheses
         jpgWithParens = re.search('\((.*\.jpg)\)$', word)
         pngWithParens = re.search('\((.*\.png)\)$', word)
         tifWithParens = re.search('\((.*\.tif)\)$', word)
         
-        #these variables store the image URL if it is not enclosed with any special characters
+        # these variables store the image URL if it is not enclosed with any
+        # special characters
         jpg = re.search('(.*\.jpg$)', word)
         png = re.search('(.*\.png$)', word)
         tif = re.search('(.*\.tif$)', word)
@@ -49,5 +50,3 @@ def extractURL(comment):
     
     if imageList:
         return imageList
-
-

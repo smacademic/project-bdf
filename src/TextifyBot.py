@@ -1,7 +1,7 @@
 # TextifyBot.py - Team BDF - CS 298-01 S19 WCSU
 
-# This python script identified comments that should eventually be processed by our bot
-# within a specific set of subreddits
+# This python script identified comments that should eventually be processed
+# by our bot within a specific set of subreddits
 
 import os
 import urllib.request
@@ -18,10 +18,10 @@ IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 
-def findTextInSubreddit(connection, sub, keyword): # pass subreddit name in to search for !TextifyReddit
+def findTextInSubreddit(connection, sub, keyword):
     for submission in connection.subreddit(sub).hot(limit=10):
-        # this code is not well-optimized for deeply nested comments
-        # see https://praw.readthedocs.io/en/latest/code_overview/models/comment.html#praw.models.Comment.parent
+        # this code is not well-optimized for deeply nested comments. See:
+        # https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
         for comment in submission.comments.list():
             if (comment.body.find(keyword)) >= 0:
                 if isinstance(comment.parent(), praw.models.Comment):
@@ -50,7 +50,8 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
     for imageURL in imagesToDL:
         imageURL = imageURL.rstrip('/')
 
-        # rpartition returns a 3-tuple: (pre-last-separator, separator, post-last-separator)
+        # rpartition returns a 3-tuple: (pre-last-separator, separator,
+        #                                post-last-separator)
         imageName = imageURL.rpartition('/')[2]
         
         if imageName != '':
