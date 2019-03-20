@@ -7,6 +7,7 @@ import praw
 import os
 import time # temporary for testing image saving
 import urllib.request
+import authentication # contains credentials for TextifyReddit account
 
 from praw.models import Comment
 import re
@@ -17,10 +18,14 @@ SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 
 # build Reddit instance using TextifyReddit's credentials
-reddit = praw.Reddit(client_id='', # 14 characters
-                     client_secret='', # 27 characters
-                     user_agent='script:smacademic.project-bdf.textifyreddit:v0.0.20190308 (by /u/TextifyReddit)')
-
+def textify_login():
+    bot = praw.Reddit(username = authentication.username,
+                password = authentication.password,
+                client_id = authentication.client_id,
+                client_secret = authentication.client_secret,
+                user_agent = authentication.user_agent)
+    print("Logged in!")
+    return bot
 
 numComments = 0 # total number of comments parsed
 numRequests = 0 # number of comments with KEYWORD
@@ -59,7 +64,9 @@ def extractURL(comment):
     if imageList:
         return imageList
 
-for submission in reddit.subreddit(SUBREDDIT).hot(limit=10):
+bot = textify_login()
+
+for submission in bot.subreddit(SUBREDDIT).hot(limit=10):
     # this code is not well-optimized for deeply nested comments
     # see https://praw.readthedocs.io/en/latest/code_overview/models/comment.html#praw.models.Comment.parent
     for comment in submission.comments.list():
