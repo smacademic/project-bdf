@@ -35,8 +35,8 @@ def extractURL(comment):
         
         #these variables store the image URL if it is not enclosed with any special characters
         jpg = re.search('(.*\.jpg$)', word)
-        png = re.search('.*\.png$', word)
-        tif = re.search('.*\.tif$', word)
+        png = re.search('(.*\.png$)', word)
+        tif = re.search('(.*\.tif$)', word)
         
         if jpgWithParens != None:
             imageList.append(jpgWithParens.group(1))
