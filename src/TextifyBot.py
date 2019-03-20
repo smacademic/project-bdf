@@ -4,11 +4,16 @@
 # within a specific set of subreddits
 
 import praw
+import os
+import time # temporary for testing image saving
+import urllib.request
+
 from praw.models import Comment
 
 KEYWORD = '!TextifyReddit' # what to look for to know when the bot is called
 SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
                       # can be specified by placing a '+' between them)
+IMAGE_DIR = 'images/' # directory to temporarily download images to
 
 # build Reddit instance using TextifyReddit's credentials
 reddit = praw.Reddit(client_id='', # 14 characters
@@ -32,6 +37,24 @@ for submission in reddit.subreddit(SUBREDDIT).hot(limit=10):
             else:
                 print('Submission to textify:')
                 print(comment.parent().url)
+
+
+# download image given a URL
+imagesToDL = ['https://i.redd.it/hovk55p9xty01.jpg', 'https://i.redd.it/slo0elpdf9n21.jpg/',
+              'https://i.redd.it/3p7qj2zbr9n21.png', 'https://i.imgur.com/VDpcFrz.jpg']
+
+for imageURL in imagesToDL:
+    imageURL = imageURL.rstrip('/')
+
+    # rpartition returns a 3-tuple: (pre-last-separator, separator, post-last-separator)
+    imageName = imageURL.rpartition('/')[2]
+    
+    if imageName != '':
+        imagePath = IMAGE_DIR + imageName
+        urllib.request.urlretrieve(imageURL, imagePath)
+        time.sleep(5) # TEMP: Allows time for inspecting image
+        # TODO: Process image
+        os.remove(imagePath)
 
 
 print('Number of comments parsed: ', numComments)
