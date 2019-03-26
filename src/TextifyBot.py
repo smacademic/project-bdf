@@ -16,7 +16,7 @@ SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
                       # can be specified by placing a '+' between them)
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-COMMENT_LEDGER = 'processedComments.txt' # file that contains a list of comments
+POST_LEDGER = 'processedPosts.txt' # file that contains a list of comments
                                          # that have been processed (delim: \n)
 
 
@@ -25,9 +25,9 @@ def findTextInSubreddit(connection, sub, keyword):
         # this code is not well-optimized for deeply nested comments. See:
         # https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
         for comment in submission.comments.list():
-            if (comment.body.find(keyword)) >= 0:
-                if isinstance(comment.parent(), praw.models.Comment) and \
-                not isCommentProcessed(comment.parent().id):
+            if comment.body.find(keyword) >= 0 and not \
+                isPostIDProcessed(comment.parent().id):
+                if isinstance(comment.parent(), praw.models.Comment):
                     urls = botSetup.extractURL(comment.parent().body)
                     print('Comment to textify:')
                     print(comment.parent().body)
@@ -40,22 +40,24 @@ def findTextInSubreddit(connection, sub, keyword):
                 elif isinstance(comment.parent(), praw.models.Submission):
                     print('Submission to textify:')
                     print(comment.parent().url)
+                    markPostIDAsProcessed(comment.parent().id)
 
-# Checks if a commentID has already been parsed for image URLS
-def isCommentProcessed(commentID):
-    with open(COMMENT_LEDGER, 'a+') as ledger:
+
+# Checks if a comment or submission ID has already been parsed for image URLS
+def isPostIDProcessed(id):
+    with open(POST_LEDGER, 'a+') as ledger:
         ledger.seek(0,0)
         for line in ledger:
-            if commentID in line:
+            if id in line:
                 return True
         return False
 
 
-# Adds a comment to the list of processed comments. A comment should only be
+# Adds an ID to the list of processed IDs. A comment or post should only be
 # added if it has been scanned for URLs and transcribed
-def markCommentAsProcessed(commentID):
-    with open(COMMENT_LEDGER, 'a') as ledger:
-        ledger.write(commentID + '\n')
+def markPostIDAsProcessed(id):
+    with open(POST_LEDGER, 'a') as ledger:
+        ledger.write(id + '\n')
 
 
 def tesseractTranscribe(imagePath):
