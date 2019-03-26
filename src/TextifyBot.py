@@ -36,7 +36,7 @@ def findTextInSubreddit(connection, sub, keyword):
                         print(urls)
                         print('Text transcribed:')
                         print(transcribeImages(urls))
-                        markCommentAsProcessed(comment.parent().id)
+                    markPostIDAsProcessed(comment.parent().id)
                 elif isinstance(comment.parent(), praw.models.Submission):
                     print('Submission to textify:')
                     print(comment.parent().url)
