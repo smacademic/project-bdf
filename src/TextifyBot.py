@@ -1,7 +1,7 @@
 # TextifyBot.py - Team BDF - CS 298-01 S19 WCSU
 
-# This python script identified comments that should eventually be processed
-# by our bot within a specific set of subreddits
+# This python script transcribes text from images in comments and submissions
+# that have been requested by a Reddit comment
 
 import os
 import urllib.request
@@ -16,8 +16,9 @@ SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
                       # can be specified by placing a '+' between them)
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-POST_LEDGER = 'processedPosts.txt' # file that contains a list of comments
-                                         # that have been processed (delim: \n)
+POST_LEDGER = 'processedPosts.txt' # file that contains a list of IDs of
+                                   # comments and submissions that have been
+                                   # processed (delim: \n)
 
 
 def findTextInSubreddit(connection, sub, keyword):
