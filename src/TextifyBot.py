@@ -16,6 +16,8 @@ SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
                       # can be specified by placing a '+' between them)
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+COMMENT_LEDGER = 'processedComments.txt' # file that contains a list of comments
+                                         # that have been processed (delim: \n)
 
 
 def findTextInSubreddit(connection, sub, keyword):
@@ -24,7 +26,8 @@ def findTextInSubreddit(connection, sub, keyword):
         # https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
         for comment in submission.comments.list():
             if (comment.body.find(keyword)) >= 0:
-                if isinstance(comment.parent(), praw.models.Comment):
+                if isinstance(comment.parent(), praw.models.Comment) and \
+                not isCommentProcessed(comment.parent().id):
                     urls = botSetup.extractURL(comment.parent().body)
                     print('Comment to textify:')
                     print(comment.parent().body)
@@ -33,9 +36,26 @@ def findTextInSubreddit(connection, sub, keyword):
                         print(urls)
                         print('Text transcribed:')
                         print(transcribeImages(urls))
-                else:
+                        markCommentAsProcessed(comment.parent().id)
+                elif isinstance(comment.parent(), praw.models.Submission):
                     print('Submission to textify:')
                     print(comment.parent().url)
+
+# Checks if a commentID has already been parsed for image URLS
+def isCommentProcessed(commentID):
+    with open(COMMENT_LEDGER, 'a+') as ledger:
+        ledger.seek(0,0)
+        for line in ledger:
+            if commentID in line:
+                return True
+        return False
+
+
+# Adds a comment to the list of processed comments. A comment should only be
+# added if it has been scanned for URLs and transcribed
+def markCommentAsProcessed(commentID):
+    with open(COMMENT_LEDGER, 'a') as ledger:
+        ledger.write(commentID + '\n')
 
 
 def tesseractTranscribe(imagePath):
