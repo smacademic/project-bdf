@@ -42,6 +42,9 @@ def findTextInSubreddit(connection, sub, keyword):
                 else:
                     print('Submission to textify:')
                     print(comment.parent().url)
+                        if checker:
+                            comment.reply(transcribeImages(urls))
+                            checker = False
 
 
 def tesseractTranscribe(imagePath):
