@@ -15,11 +15,11 @@ def textify_login():
     return bot
 
 
-# splits comment sentence into individual words then parses words 
+# splits comment sentence into individual words then parses words
 # to find if they end in popular image format
 def extractURL(comment):
     commentSplit = re.split('\s', comment)
-    
+
     imageList = []
 
     for word in commentSplit:
@@ -28,13 +28,13 @@ def extractURL(comment):
         jpgWithParens = re.search('\((.*\.jpg)\)$', word)
         pngWithParens = re.search('\((.*\.png)\)$', word)
         tifWithParens = re.search('\((.*\.tif)\)$', word)
-        
+
         # these variables store the image URL if it is not enclosed with any
         # special characters
         jpg = re.search('(.*\.jpg$)', word)
         png = re.search('(.*\.png$)', word)
         tif = re.search('(.*\.tif$)', word)
-        
+
         if jpgWithParens != None:
             imageList.append(jpgWithParens.group(1))
         elif pngWithParens != None:
@@ -47,6 +47,6 @@ def extractURL(comment):
             imageList.append(png.group(1))
         elif tif != None:
             imageList.append(tif.group(1))
-    
+
     if imageList:
         return imageList
