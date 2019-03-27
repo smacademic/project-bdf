@@ -22,6 +22,9 @@ POST_LEDGER = 'processedPosts.txt' # file that contains a list of IDs of
 
 
 def findTextInSubreddit(connection, sub, keyword):
+
+    checker = True
+
     for submission in connection.subreddit(sub).hot(limit=10):
         # this code is not well-optimized for deeply nested comments. See:
         # https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
@@ -37,10 +40,16 @@ def findTextInSubreddit(connection, sub, keyword):
                         print(urls)
                         print('Text transcribed:')
                         print(transcribeImages(urls))
+                        if checker:
+                            comment.reply(transcribeImages(urls))
+                            checker = False
                     markPostIDAsProcessed(comment.parent().id)
                 elif isinstance(comment.parent(), praw.models.Submission):
                     print('Submission to textify:')
                     print(comment.parent().url)
+                    if checker:
+                        comment.reply(transcribeImages(urls))
+                        checker = False
                     markPostIDAsProcessed(comment.parent().id)
 
 
