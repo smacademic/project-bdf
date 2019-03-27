@@ -41,15 +41,15 @@ def findTextInSubreddit(connection, sub, keyword):
                         print('Text transcribed:')
                         print(transcribeImages(urls))
                         if checker:
-                            comment.reply(transcribeImages(urls))
-                            checker = False
+                           comment.reply(transcribeImages(urls))
+                           checker = False
                     markPostIDAsProcessed(comment.parent().id)
                 elif isinstance(comment.parent(), praw.models.Submission):
                     print('Submission to textify:')
                     print(comment.parent().url)
                         if checker:
-                            comment.reply(transcribeImages(urls))
-                            checker = False
+                           comment.reply(transcribeImages(urls))
+                           checker = False
                     markPostIDAsProcessed(comment.parent().id)
 
 
