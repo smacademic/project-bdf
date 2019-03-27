@@ -11,14 +11,13 @@ import PIL
 import pytesseract
 
 
-KEYWORD = '!TextifyReddit' # what to look for to know when the bot is called
 SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
                       # can be specified by placing a '+' between them)
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 
-def findTextInSubreddit(connection, sub, keyword):
+def findTextInSubreddit(connection):
     for mention in connection.inbox.mentions(limit=None):
         if isinstance(mention.parent(), praw.models.Comment):
             urls = botSetup.extractURL(mention.parent().body)
@@ -66,4 +65,4 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
 
 # Main driver code
 bot = botSetup.textify_login()
-findTextInSubreddit(bot, SUBREDDIT, KEYWORD)
+findTextInSubreddit(bot)
