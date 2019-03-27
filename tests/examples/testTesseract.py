@@ -1,4 +1,4 @@
-# Team BDF 
+# Team BDF
 # Programmer: Calebe de Aquino
 # Tesseract OCR Engine Test
 
