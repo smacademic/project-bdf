@@ -1,7 +1,7 @@
 # TextifyBot.py - Team BDF - CS 298-01 S19 WCSU
 
-# This python script identified comments that should eventually be processed
-# by our bot within a specific set of subreddits
+# This python script transcribes text from images in comments and submissions
+# that have been requested by a Reddit comment
 
 import os
 import urllib.request
@@ -18,23 +18,37 @@ WHITELIST = ['BDFTest'] # list of subreddits where bot is allowed to transcribe
 BLACKLIST = [] # list of subreddits where bot is not allowed to transcribe posts
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+POST_LEDGER = 'processedPosts.txt' # file that contains a list of IDs of
+                                   # comments and submissions that have been
+                                   # processed (delim: \n)
 
 
 def findTextInSubreddit(connection):
+    checker = True
     for mention in connection.inbox.mentions(limit=None):
-        if isinstance(mention.parent(), praw.models.Comment) and \
-        allowedToParse(mention.parent()):
-            urls = botSetup.extractURL(mention.parent().body)
-            print('Comment to textify:')
-            print(mention.parent().body)
-            if urls != None:
-                print('URL(s) found:')
-                print(urls)
-                print('Text transcribed:')
-                print(transcribeImages(urls))
-        elif isinstance(mention.parent(), praw.models.Submission):
-            print('Submission to textify:')
-            print(mention.parent().url)
+        if not isPostIDProcessed(comment.parent().id):
+            if isinstance(mention.parent(), praw.models.Comment) and \
+            allowedToParse(mention.parent()):
+                urls = botSetup.extractURL(mention.parent().body)
+                print('Comment to textify:')
+                print(mention.parent().body)
+                if urls != None:
+                    print('URL(s) found:')
+                    print(urls)
+                    print('Text transcribed:')
+                    print(transcribeImages(urls))
+                    if checker:
+                        comment.reply(transcribeImages(urls))
+                        checker = False
+                markPostIDAsProcessed(comment.parent().id)
+            elif isinstance(mention.parent(), praw.models.Submission):
+                print('Submission to textify:')
+                print(mention.parent().url)
+                if checker:
+                    comment.reply(transcribeImages(urls))
+                    checker = False                
+                markPostIDAsProcessed(comment.parent().id)
+
 
 # Returns true if bot is allowed to parse the post. The following rules apply:
 # - Post's subreddit must not be marked NSFW
@@ -50,6 +64,23 @@ def allowedToParse(postID):
     else:
         return postID.subreddit.display_name.lower() in \
             (name.lower() for name in WHITELIST)
+
+
+# Checks if a comment or submission ID has already been parsed for image URLS
+def isPostIDProcessed(id):
+    with open(POST_LEDGER, 'a+') as ledger:
+        ledger.seek(0,0)
+        for line in ledger:
+            if id in line:
+                return True
+        return False
+
+
+# Adds an ID to the list of processed IDs. A comment or post should only be
+# added if it has been scanned for URLs and transcribed
+def markPostIDAsProcessed(id):
+    with open(POST_LEDGER, 'a') as ledger:
+        ledger.write(id + '\n')
 
 
 def tesseractTranscribe(imagePath):
