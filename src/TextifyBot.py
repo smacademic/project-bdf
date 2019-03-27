@@ -98,7 +98,7 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
         # rpartition returns a 3-tuple: (pre-last-separator, separator,
         #                                post-last-separator)
         imageName = imageURL.rpartition('/')[2]
-        
+
         if imageName != '':
             imagePath = IMAGE_DIR + imageName
 
@@ -114,5 +114,6 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
 
 
 # Main driver code
-bot = botSetup.textify_login()
-findTextInSubreddit(bot)
+if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
+    bot = botSetup.textify_login()
+    findTextInSubreddit(bot)
