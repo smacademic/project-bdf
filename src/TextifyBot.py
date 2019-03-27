@@ -10,16 +10,20 @@ import praw
 import PIL
 import pytesseract
 
-
-SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
-                      # can be specified by placing a '+' between them)
+# Note: both WHITELIST and BLACKLIST are case insensitive; WHITELIST overrides
+# BLACKLIST if a subreddit exists in both lists
+WHITELIST = ['BDFTest'] # list of subreddits where bot is allowed to transcribe
+                        # posts. If the first item in the list is '*' the bot
+                        # is allowed to post in any subreddit not in BLACKLIST.
+BLACKLIST = [] # list of subreddits where bot is not allowed to transcribe posts
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 
 def findTextInSubreddit(connection):
     for mention in connection.inbox.mentions(limit=None):
-        if isinstance(mention.parent(), praw.models.Comment):
+        if isinstance(mention.parent(), praw.models.Comment) and \
+        allowedToParse(mention.parent()):
             urls = botSetup.extractURL(mention.parent().body)
             print('Comment to textify:')
             print(mention.parent().body)
@@ -31,6 +35,21 @@ def findTextInSubreddit(connection):
         elif isinstance(mention.parent(), praw.models.Submission):
             print('Submission to textify:')
             print(mention.parent().url)
+
+# Returns true if bot is allowed to parse the post. The following rules apply:
+# - Post's subreddit must not be marked NSFW
+# - Post's subreddit must not be in blacklist
+# - Post's subreddit must be in whitelist if whitelist is not disabled by '*'
+def allowedToParse(postID):
+    if postID.subreddit.over18:
+        return False
+
+    if WHITELIST[0] == '*':
+        return postID.subreddit.display_name.lower() not in \
+            (name.lower() for name in BLACKLIST)
+    else:
+        return postID.subreddit.display_name.lower() in \
+            (name.lower() for name in WHITELIST)
 
 
 def tesseractTranscribe(imagePath):
