@@ -1,7 +1,7 @@
 # TextifyBot.py - Team BDF - CS 298-01 S19 WCSU
 
-# This python script identified comments that should eventually be processed
-# by our bot within a specific set of subreddits
+# This python script transcribes text from images in comments and submissions
+# that have been requested by a Reddit comment
 
 import os
 import urllib.request
@@ -16,6 +16,9 @@ SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
                       # can be specified by placing a '+' between them)
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+POST_LEDGER = 'processedPosts.txt' # file that contains a list of IDs of
+                                   # comments and submissions that have been
+                                   # processed (delim: \n)
 
 
 def findTextInSubreddit(connection, sub, keyword):
@@ -23,7 +26,8 @@ def findTextInSubreddit(connection, sub, keyword):
         # this code is not well-optimized for deeply nested comments. See:
         # https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
         for comment in submission.comments.list():
-            if (comment.body.find(keyword)) >= 0:
+            if comment.body.find(keyword) >= 0 and not \
+                isPostIDProcessed(comment.parent().id):
                 if isinstance(comment.parent(), praw.models.Comment):
                     urls = botSetup.extractURL(comment.parent().body)
                     print('Comment to textify:')
@@ -33,9 +37,28 @@ def findTextInSubreddit(connection, sub, keyword):
                         print(urls)
                         print('Text transcribed:')
                         print(transcribeImages(urls))
-                else:
+                    markPostIDAsProcessed(comment.parent().id)
+                elif isinstance(comment.parent(), praw.models.Submission):
                     print('Submission to textify:')
                     print(comment.parent().url)
+                    markPostIDAsProcessed(comment.parent().id)
+
+
+# Checks if a comment or submission ID has already been parsed for image URLS
+def isPostIDProcessed(id):
+    with open(POST_LEDGER, 'a+') as ledger:
+        ledger.seek(0,0)
+        for line in ledger:
+            if id in line:
+                return True
+        return False
+
+
+# Adds an ID to the list of processed IDs. A comment or post should only be
+# added if it has been scanned for URLs and transcribed
+def markPostIDAsProcessed(id):
+    with open(POST_LEDGER, 'a') as ledger:
+        ledger.write(id + '\n')
 
 
 def tesseractTranscribe(imagePath):
