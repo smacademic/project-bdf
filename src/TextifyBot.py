@@ -10,10 +10,12 @@ import praw
 import PIL
 import pytesseract
 
-
-KEYWORD = '!TextifyReddit' # what to look for to know when the bot is called
-SUBREDDIT = 'BDFTest' # subreddit to search for comments in (multiple subreddits
-                      # can be specified by placing a '+' between them)
+# Note: both WHITELIST and BLACKLIST are case insensitive; WHITELIST overrides
+# BLACKLIST if a subreddit exists in both lists
+WHITELIST = ['BDFTest'] # list of subreddits where bot is allowed to transcribe
+                        # posts. If the first item in the list is '*' the bot
+                        # is allowed to post in any subreddit not in BLACKLIST.
+BLACKLIST = [] # list of subreddits where bot is not allowed to transcribe posts
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 POST_LEDGER = 'processedPosts.txt' # file that contains a list of IDs of
@@ -21,36 +23,47 @@ POST_LEDGER = 'processedPosts.txt' # file that contains a list of IDs of
                                    # processed (delim: \n)
 
 
-def findTextInSubreddit(connection, sub, keyword):
-
+def findTextInSubreddit(connection):
     checker = True
-
-    for submission in connection.subreddit(sub).hot(limit=10):
-        # this code is not well-optimized for deeply nested comments. See:
-        # https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
-        for comment in submission.comments.list():
-            if comment.body.find(keyword) >= 0 and not \
-                isPostIDProcessed(comment.parent().id):
-                if isinstance(comment.parent(), praw.models.Comment):
-                    urls = botSetup.extractURL(comment.parent().body)
-                    print('Comment to textify:')
-                    print(comment.parent().body)
-                    if urls != None:
-                        print('URL(s) found:')
-                        print(urls)
-                        print('Text transcribed:')
-                        print(transcribeImages(urls))
-                        if checker:
-                            comment.reply(transcribeImages(urls))
-                            checker = False
-                    markPostIDAsProcessed(comment.parent().id)
-                elif isinstance(comment.parent(), praw.models.Submission):
-                    print('Submission to textify:')
-                    print(comment.parent().url)
+    for mention in connection.inbox.mentions(limit=None):
+        if not isPostIDProcessed(mention.parent().id):
+            if isinstance(mention.parent(), praw.models.Comment) and \
+            allowedToParse(mention.parent()):
+                urls = botSetup.extractURL(mention.parent().body)
+                print('Comment to textify:')
+                print(mention.parent().body)
+                if urls != None:
+                    print('URL(s) found:')
+                    print(urls)
+                    print('Text transcribed:')
+                    print(transcribeImages(urls))
                     if checker:
-                        comment.reply(transcribeImages(urls))
+                        mention.reply(str(transcribeImages(urls)))
                         checker = False
-                    markPostIDAsProcessed(comment.parent().id)
+                markPostIDAsProcessed(mention.parent().id)
+            elif isinstance(mention.parent(), praw.models.Submission):
+                print('Submission to textify:')
+                print(mention.parent().url)
+                if checker:
+                    mention.reply(str(transcribeImages(urls)))
+                    checker = False                
+                markPostIDAsProcessed(mention.parent().id)
+
+
+# Returns true if bot is allowed to parse the post. The following rules apply:
+# - Post's subreddit must not be marked NSFW
+# - Post's subreddit must not be in blacklist
+# - Post's subreddit must be in whitelist if whitelist is not disabled by '*'
+def allowedToParse(postID):
+    if postID.subreddit.over18:
+        return False
+
+    if WHITELIST[0] == '*':
+        return postID.subreddit.display_name.lower() not in \
+            (name.lower() for name in BLACKLIST)
+    else:
+        return postID.subreddit.display_name.lower() in \
+            (name.lower() for name in WHITELIST)
 
 
 # Checks if a comment or submission ID has already been parsed for image URLS
@@ -103,4 +116,4 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
 # Main driver code
 if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
     bot = botSetup.textify_login()
-    findTextInSubreddit(bot, SUBREDDIT, KEYWORD)
+    findTextInSubreddit(bot)
