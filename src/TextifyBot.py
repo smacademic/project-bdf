@@ -19,6 +19,9 @@ TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 
 def findTextInSubreddit(connection, sub, keyword):
+
+    checker = True
+
     for submission in connection.subreddit(sub).hot(limit=10):
         # this code is not well-optimized for deeply nested comments. See:
         # https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
@@ -33,6 +36,9 @@ def findTextInSubreddit(connection, sub, keyword):
                         print(urls)
                         print('Text transcribed:')
                         print(transcribeImages(urls))
+                        if checker:
+                            comment.reply(transcribeImages(urls))
+                            checker = False
                 else:
                     print('Submission to textify:')
                     print(comment.parent().url)
