@@ -47,9 +47,9 @@ def findTextInSubreddit(connection, sub, keyword):
                 elif isinstance(comment.parent(), praw.models.Submission):
                     print('Submission to textify:')
                     print(comment.parent().url)
-                        if checker:
-                           comment.reply(transcribeImages(urls))
-                           checker = False
+                    if checker:
+                        comment.reply(transcribeImages(urls))
+                        checker = False
                     markPostIDAsProcessed(comment.parent().id)
 
 
