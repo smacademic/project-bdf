@@ -26,7 +26,7 @@ POST_LEDGER = 'processedPosts.txt' # file that contains a list of IDs of
 def findTextInSubreddit(connection):
     checker = True
     for mention in connection.inbox.mentions(limit=None):
-        if not isPostIDProcessed(comment.parent().id):
+        if not isPostIDProcessed(mention.parent().id):
             if isinstance(mention.parent(), praw.models.Comment) and \
             allowedToParse(mention.parent()):
                 urls = botSetup.extractURL(mention.parent().body)
@@ -38,16 +38,16 @@ def findTextInSubreddit(connection):
                     print('Text transcribed:')
                     print(transcribeImages(urls))
                     if checker:
-                        comment.reply(transcribeImages(urls))
+                        mention.reply(str(transcribeImages(urls)))
                         checker = False
-                markPostIDAsProcessed(comment.parent().id)
+                markPostIDAsProcessed(mention.parent().id)
             elif isinstance(mention.parent(), praw.models.Submission):
                 print('Submission to textify:')
                 print(mention.parent().url)
                 if checker:
-                    comment.reply(transcribeImages(urls))
+                    mention.reply(str(transcribeImages(urls)))
                     checker = False                
-                markPostIDAsProcessed(comment.parent().id)
+                markPostIDAsProcessed(mention.parent().id)
 
 
 # Returns true if bot is allowed to parse the post. The following rules apply:
