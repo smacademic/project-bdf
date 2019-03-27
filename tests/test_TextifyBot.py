@@ -2,7 +2,6 @@ import sys
 sys.path.append('..\\src')
 import os
 import TextifyBot
-import pytest
 
 def test_tesseractTranscribe():
     images = []
