@@ -19,23 +19,19 @@ TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 
 def findTextInSubreddit(connection, sub, keyword):
-    for submission in connection.subreddit(sub).hot(limit=10):
-        # this code is not well-optimized for deeply nested comments. See:
-        # https://praw.readthedocs.io/en/latest/code_overview/models/comment.html
-        for comment in submission.comments.list():
-            if (comment.body.find(keyword)) >= 0:
-                if isinstance(comment.parent(), praw.models.Comment):
-                    urls = botSetup.extractURL(comment.parent().body)
-                    print('Comment to textify:')
-                    print(comment.parent().body)
-                    if urls != None:
-                        print('URL(s) found:')
-                        print(urls)
-                        print('Text transcribed:')
-                        print(transcribeImages(urls))
-                else:
-                    print('Submission to textify:')
-                    print(comment.parent().url)
+    for mention in connection.inbox.mentions(limit=None):
+        if isinstance(mention.parent(), praw.models.Comment):
+            urls = botSetup.extractURL(mention.parent().body)
+            print('Comment to textify:')
+            print(mention.parent().body)
+            if urls != None:
+                print('URL(s) found:')
+                print(urls)
+                print('Text transcribed:')
+                print(transcribeImages(urls))
+        elif isinstance(mention.parent(), praw.models.Submission):
+            print('Submission to textify:')
+            print(mention.parent().url)
 
 
 def tesseractTranscribe(imagePath):
