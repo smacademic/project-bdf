@@ -1,5 +1,4 @@
 # Team BDF
-# Programmer: Calebe de Aquino
 # Tesseract OCR Engine Test
 
 import pytesseract
