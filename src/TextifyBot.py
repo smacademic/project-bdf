@@ -36,16 +36,16 @@ def findTextInSubreddit(connection):
                     print('URL(s) found:')
                     print(urls)
                     print('Text transcribed:')
-                    print(transcribeImages(urls))
+                    print(arrayToString(transcribeImages(urls)))
                     if checker:
-                        mention.reply(str(transcribeImages(urls)))
+                        mention.reply(arrayToString(transcribeImages(urls)))
                         checker = False
                 markPostIDAsProcessed(mention.parent().id)
             elif isinstance(mention.parent(), praw.models.Submission):
                 print('Submission to textify:')
                 print(mention.parent().url)
                 if checker:
-                    mention.reply(str(transcribeImages(urls)))
+                    mention.reply(arrayToString(transcribeImages(urls)))
                     checker = False                
                 markPostIDAsProcessed(mention.parent().id)
 
@@ -111,6 +111,14 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
                 print("WARNING: HTTPError when downloading " + imageURL + ":\n")
                 print(str(e) + '\n')
     return transcribedText
+
+#Extract characters from array into a string variable
+def arrayToString(textArray):
+    str = ""
+    for x in textArray:
+        str = str + x
+    return str
+
 
 
 # Main driver code
