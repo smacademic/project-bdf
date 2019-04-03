@@ -9,6 +9,7 @@ import botSetup
 import praw
 import PIL
 import pytesseract
+import time
 
 # Note: both WHITELIST and BLACKLIST are case insensitive; WHITELIST overrides
 # BLACKLIST if a subreddit exists in both lists
@@ -105,4 +106,6 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
 # Main driver code
 if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
     bot = botSetup.textify_login()
-    processUsernameMentions(bot)
+    while True:
+        processUsernameMentions(bot)
+        time.sleep(5)
