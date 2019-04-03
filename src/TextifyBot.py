@@ -114,12 +114,25 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
 
 #Extract characters from array into a string variable
 def arrayToString(textArray):
-    str = ""
+    str1 = ""
     for x in textArray:
-        str = str + x
-    return str
+        str1 = str1 + x
+    return markdownSyntax(str1)
 
-
+def markdownSyntax(str1):
+    x = 0
+    while x < len(str1):
+        index1 = str1.find('\n', x)
+        index2 = str1.find('\n', index1 + 1)
+        if index1 == -1:
+            break
+        elif index1 - index2 == -1:
+            x = index1 + 2
+        else:
+            str2 = str1[:index1] + '\n' + str1[index1:]
+            str1 = str2
+            x = index1 + 2
+    return str1
 
 # Main driver code
 if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
