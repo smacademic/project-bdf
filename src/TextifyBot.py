@@ -86,37 +86,19 @@ def markPostIDAsProcessed(id):
 
 
 def tesseractTranscribe(imagePath):
-    improveImage(imagePath)
-
-    image = PIL.Image.open(imagePath)
+    image = PIL.Image.open(improveImage(imagePath))
     pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
     return pytesseract.image_to_string(image)
 
 
 # converts downloaded image to grayscale
+# and converts all pixels close to black to full black / all pixels close to white to full white
 def improveImage(imagePath):
-    black = (0,0,0)
-    white = (255,255,255)
-    threshold = (160,160,160)
-
-    # Open input image in grayscale mode and get its pixels.
-    img = Image.open(imagePath).convert("LA")
-    pixels = img.getdata()
-
-    newPixels = []
-
-    #Compare each pixel
-    for pixel in pixels:
-        if pixel < threshold:
-            newPixels.append(black)
-        else:
-            newPixels.append(white)
-
-    # Create and save new image.
-    newImg = Image.new("RGB",img.size)
-    newImg.putdata(newPixels)
-    newImg.save(imagePath)
+    img = cv2.imread(imagePath)
+    img = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+    cv2.imwrite(imagePath, img)
+    return imagePath
 
 
 def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
