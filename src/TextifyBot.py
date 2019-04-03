@@ -9,6 +9,8 @@ import botSetup
 import praw
 import PIL
 import pytesseract
+import cv2
+from PIL import Image
 
 # Note: both WHITELIST and BLACKLIST are case insensitive; WHITELIST overrides
 # BLACKLIST if a subreddit exists in both lists
@@ -46,7 +48,7 @@ def findTextInSubreddit(connection):
                 print(mention.parent().url)
                 if checker:
                     mention.reply(str(transcribeImages(urls)))
-                    checker = False                
+                    checker = False
                 markPostIDAsProcessed(mention.parent().id)
 
 
@@ -84,10 +86,37 @@ def markPostIDAsProcessed(id):
 
 
 def tesseractTranscribe(imagePath):
+    improveImage(imagePath)
+
     image = PIL.Image.open(imagePath)
     pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
     return pytesseract.image_to_string(image)
+
+
+# converts downloaded image to grayscale
+def improveImage(imagePath):
+    black = (0,0,0)
+    white = (255,255,255)
+    threshold = (160,160,160)
+
+    # Open input image in grayscale mode and get its pixels.
+    img = Image.open(imagePath).convert("LA")
+    pixels = img.getdata()
+
+    newPixels = []
+
+    #Compare each pixel
+    for pixel in pixels:
+        if pixel < threshold:
+            newPixels.append(black)
+        else:
+            newPixels.append(white)
+
+    # Create and save new image.
+    newImg = Image.new("RGB",img.size)
+    newImg.putdata(newPixels)
+    newImg.save(imagePath)
 
 
 def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
