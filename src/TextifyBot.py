@@ -119,6 +119,7 @@ def arrayToString(textArray):
         str1 = str1 + x
     return markdownSyntax(str1)
 
+#Function to properly format new lines
 def markdownSyntax(str1):
     x = 0
     while x < len(str1):
