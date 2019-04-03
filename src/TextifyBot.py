@@ -21,33 +21,37 @@ TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 POST_LEDGER = 'processedPosts.txt' # file that contains a list of IDs of
                                    # comments and submissions that have been
                                    # processed (delim: \n)
+CHECKER = True # enables posting to Reddit
 
 
-def findTextInSubreddit(connection):
-    checker = True
-    for mention in connection.inbox.mentions(limit=None):
-        if not isPostIDProcessed(mention.parent().id):
-            if isinstance(mention.parent(), praw.models.Comment) and \
-            allowedToParse(mention.parent()):
-                urls = botSetup.extractURL(mention.parent().body)
-                print('Comment to textify:')
-                print(mention.parent().body)
-                if urls != None:
-                    print('URL(s) found:')
-                    print(urls)
-                    print('Text transcribed:')
-                    print(transcribeImages(urls))
-                    if checker:
-                        mention.reply(str(transcribeImages(urls)))
-                        checker = False
-                markPostIDAsProcessed(mention.parent().id)
-            elif isinstance(mention.parent(), praw.models.Submission):
-                print('Submission to textify:')
-                print(mention.parent().url)
-                if checker:
+def processUsernameMentions(connection):
+    for newMessage in connection.inbox.unread(limit=None):
+        if isinstance(newMessage, praw.models.Mention):
+            processMention(newMessage)
+            newMessage.mark_read()
+
+
+def processMention(mention):
+    if not isPostIDProcessed(mention.parent().id):
+        if isinstance(mention.parent(), praw.models.Comment) and \
+        allowedToParse(mention.parent()):
+            urls = botSetup.extractURL(mention.parent().body)
+            print('Comment to textify:')
+            print(mention.parent().body)
+            if urls != None:
+                print('URL(s) found:')
+                print(urls)
+                print('Text transcribed:')
+                print(transcribeImages(urls))
+                if CHECKER:
                     mention.reply(str(transcribeImages(urls)))
-                    checker = False                
-                markPostIDAsProcessed(mention.parent().id)
+            markPostIDAsProcessed(mention.parent().id)
+        elif isinstance(mention.parent(), praw.models.Submission):
+            print('Submission to textify:')
+            print(mention.parent().url)
+            if CHECKER:
+                mention.reply(str(transcribeImages(urls)))
+            markPostIDAsProcessed(mention.parent().id)
 
 
 # Returns true if bot is allowed to parse the post. The following rules apply:
@@ -116,4 +120,4 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
 # Main driver code
 if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
     bot = botSetup.textify_login()
-    findTextInSubreddit(bot)
+    processUsernameMentions(bot)
