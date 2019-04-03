@@ -28,7 +28,8 @@ def processUsernameMentions(connection):
     for newMessage in connection.inbox.unread(limit=None):
         if isinstance(newMessage, praw.models.Mention):
             processMention(newMessage)
-            newMessage.mark_read()
+            if CHECKER:
+                newMessage.mark_read()
 
 
 def processMention(mention):
