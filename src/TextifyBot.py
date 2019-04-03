@@ -22,11 +22,18 @@ CHECKER = True # enables posting to Reddit
 
 
 def processUsernameMentions(connection):
-    for newMessage in connection.inbox.unread(limit=None):
-        if isinstance(newMessage, praw.models.Mention):
-            processMention(newMessage)
+    for newMsg in connection.inbox.unread():
+        if isinstance(newMsg, praw.models.Comment) and isMention(newMsg):
+            processMention(newMsg)
             if CHECKER:
-                newMessage.mark_read()
+                newMsg.mark_read()
+
+
+def isMention(message):
+    if isinstance(message, praw.models.Comment):
+        return message.subject == 'username mention'
+    else:
+        return False
 
 
 def processMention(mention):
