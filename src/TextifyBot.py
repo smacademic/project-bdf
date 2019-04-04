@@ -9,6 +9,7 @@ import botSetup
 import praw
 import PIL
 import pytesseract
+import time
 
 # Note: both WHITELIST and BLACKLIST are case insensitive; WHITELIST overrides
 # BLACKLIST if a subreddit exists in both lists
@@ -18,36 +19,42 @@ WHITELIST = ['BDFTest'] # list of subreddits where bot is allowed to transcribe
 BLACKLIST = [] # list of subreddits where bot is not allowed to transcribe posts
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-POST_LEDGER = 'processedPosts.txt' # file that contains a list of IDs of
-                                   # comments and submissions that have been
-                                   # processed (delim: \n)
+CHECKER = True # enables posting to Reddit
 
 
-def findTextInSubreddit(connection):
-    checker = True
-    for mention in connection.inbox.mentions(limit=None):
-        if not isPostIDProcessed(mention.parent().id):
-            if isinstance(mention.parent(), praw.models.Comment) and \
-            allowedToParse(mention.parent()):
-                urls = botSetup.extractURL(mention.parent().body)
-                print('Comment to textify:')
-                print(mention.parent().body)
-                if urls != None:
-                    print('URL(s) found:')
-                    print(urls)
-                    print('Text transcribed:')
-                    print(arrayToString(transcribeImages(urls)))
-                    if checker:
-                        mention.reply(arrayToString(transcribeImages(urls)))
-                        checker = False
-                markPostIDAsProcessed(mention.parent().id)
-            elif isinstance(mention.parent(), praw.models.Submission):
-                print('Submission to textify:')
-                print(mention.parent().url)
-                if checker:
-                    mention.reply(arrayToString(transcribeImages(urls)))
-                    checker = False                
-                markPostIDAsProcessed(mention.parent().id)
+def processUsernameMentions(connection):
+    for newMsg in connection.inbox.unread():
+        if isinstance(newMsg, praw.models.Comment) and isMention(newMsg):
+            processMention(newMsg)
+            if CHECKER:
+                newMsg.mark_read()
+
+
+def isMention(message):
+    if isinstance(message, praw.models.Comment):
+        return message.subject == 'username mention'
+    else:
+        return False
+
+
+def processMention(mention):
+    if isinstance(mention.parent(), praw.models.Comment) and \
+    allowedToParse(mention.parent()):
+        urls = botSetup.extractURL(mention.parent().body)
+        print('Comment to textify:')
+        print(mention.parent().body)
+        if urls != None:
+            print('URL(s) found:')
+            print(urls)
+            print('Text transcribed:')
+            print(transcribeImages(urls))
+            if CHECKER:
+                mention.reply(arrayToString(transcribeImages(urls)))
+    elif isinstance(mention.parent(), praw.models.Submission):
+        print('Submission to textify:')
+        print(mention.parent().url)
+        if CHECKER:
+            mention.reply(arrayToString(transcribeImages(urls)))
 
 
 # Returns true if bot is allowed to parse the post. The following rules apply:
@@ -64,23 +71,6 @@ def allowedToParse(postID):
     else:
         return postID.subreddit.display_name.lower() in \
             (name.lower() for name in WHITELIST)
-
-
-# Checks if a comment or submission ID has already been parsed for image URLS
-def isPostIDProcessed(id):
-    with open(POST_LEDGER, 'a+') as ledger:
-        ledger.seek(0,0)
-        for line in ledger:
-            if id in line:
-                return True
-        return False
-
-
-# Adds an ID to the list of processed IDs. A comment or post should only be
-# added if it has been scanned for URLs and transcribed
-def markPostIDAsProcessed(id):
-    with open(POST_LEDGER, 'a') as ledger:
-        ledger.write(id + '\n')
 
 
 def tesseractTranscribe(imagePath):
@@ -138,4 +128,6 @@ def markdownSyntax(str1):
 # Main driver code
 if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
     bot = botSetup.textify_login()
-    findTextInSubreddit(bot)
+    while True:
+        processUsernameMentions(bot)
+        time.sleep(5)
