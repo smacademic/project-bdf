@@ -95,9 +95,11 @@ def tesseractTranscribe(imagePath):
 # converts downloaded image to grayscale
 # and converts all pixels close to black to full black / all pixels close to white to full white
 def improveImage(imagePath):
-    img = cv2.imread(imagePath)
-    img = cv2.resize(img, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-    cv2.imwrite(imagePath, img)
+    image = Image.open(imagePath)
+    width = image.width
+    height = image.height
+    image = image.resize((width*2, height*2))
+    image.save(imagePath)
     return imagePath
 
 
