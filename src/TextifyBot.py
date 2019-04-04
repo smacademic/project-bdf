@@ -9,7 +9,6 @@ import botSetup
 import praw
 import PIL
 import pytesseract
-import cv2
 from PIL import Image
 
 # Note: both WHITELIST and BLACKLIST are case insensitive; WHITELIST overrides
