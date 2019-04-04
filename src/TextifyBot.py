@@ -49,16 +49,18 @@ def processMention(mention):
             print('Text transcribed:')
             print(transcribeImages(urls))
             if CHECKER:
-                mention.reply(arrayToString(transcribeImages(urls)))
+                if arrayToString(transcribeImages(urls)) == '' or arrayToString(transcribeImages(urls)) == ' ':
+                    mention.reply("Transcription was unable to identify any text within the image")
+                else:
+                    mention.reply(arrayToString(transcribeImages(urls)))
+        else:
+            if CHECKER:
+                mention.reply("No URL(s) found")
     elif isinstance(mention.parent(), praw.models.Submission):
         print('Submission to textify:')
         print(mention.parent().url)
         if CHECKER:
             mention.reply(arrayToString(transcribeImages(urls)))
-
-
-# Returns true if bot is allowed to parse the post. The following rules apply:
-# - Post's subreddit must not be marked NSFW
 # - Post's subreddit must not be in blacklist
 # - Post's subreddit must be in whitelist if whitelist is not disabled by '*'
 def allowedToParse(postID):
@@ -100,6 +102,7 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
             except urllib.error.HTTPError as e:
                 print("WARNING: HTTPError when downloading " + imageURL + ":\n")
                 print(str(e) + '\n')
+                transcribedText = "HTTPError when downloading"
     return transcribedText
 
 #Extract characters from array into a string variable
