@@ -10,7 +10,7 @@ import praw
 import PIL
 import pytesseract
 from PIL import Image
-Import time
+import time
 
 
 # Note: both WHITELIST and BLACKLIST are case insensitive; WHITELIST overrides
@@ -82,8 +82,7 @@ def tesseractTranscribe(imagePath):
     return pytesseract.image_to_string(image)
 
 
-# converts downloaded image to grayscale
-# and converts all pixels close to black to full black / all pixels close to white to full white
+# Makes the given image larger to improve success of transcription
 def improveImage(imagePath):
     image = Image.open(imagePath)
     width = image.width
