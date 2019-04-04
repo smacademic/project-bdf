@@ -36,3 +36,7 @@ Reddit has a relatively generous public API and is friendly towards non-maliciou
 - [Python Reddit API Wrapper (PRAW)](https://github.com/praw-dev/praw)
 - [Tesseract OCR](https://github.com/tesseract-ocr/tesseract)
 - [Pytest](https://docs.pytest.org/en/latest/)
+
+## Installation
+
+The installation/deployment procedure for both Windows and Ubuntu is detailed [here](https://github.com/smacademic/project-bdf/blob/dev/docs/InstallationProcess.md).
