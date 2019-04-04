@@ -134,11 +134,11 @@ define the following variables:
 
   - `password`
 
-  - `client\_id`
+  - `client_id`
 
-  - `client\_secret`
+  - `client_secret`
 
-  - `user\_agent`
+  - `user_agent`
 
 See [Reddit’s
 documentation](https://github.com/reddit-archive/reddit/wiki/OAuth2) for
@@ -158,12 +158,12 @@ running the Textify bot:
     means that if a subreddit exists in both lists, then the bot will be
     allowed to post in the subreddit.
 
-  - `IMAGE\_DIR` – The local directory in which to temporarily download
+  - `IMAGE_DIR` – The local directory in which to temporarily download
     images while they are being transcribed. This directory should exist
     prior to starting the bot. (The bot will **not** create directory if
     it does not exist)
 
-  - `TESSERACT\_PATH` – OS path to the Tesseract executable. Note that
+  - `TESSERACT_PATH` – OS path to the Tesseract executable. Note that
     since file paths in Windows use the `\` character, these separators
     must be escaped. The most common setting for this option is likely
     to be `'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'`. The
