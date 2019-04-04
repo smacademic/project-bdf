@@ -49,12 +49,12 @@ def processMention(mention):
             print('Text transcribed:')
             print(transcribeImages(urls))
             if CHECKER:
-                mention.reply(str(transcribeImages(urls)))
+                mention.reply(arrayToString(transcribeImages(urls)))
     elif isinstance(mention.parent(), praw.models.Submission):
         print('Submission to textify:')
         print(mention.parent().url)
         if CHECKER:
-            mention.reply(str(transcribeImages(urls)))
+            mention.reply(arrayToString(transcribeImages(urls)))
 
 
 # Returns true if bot is allowed to parse the post. The following rules apply:
@@ -102,6 +102,28 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
                 print(str(e) + '\n')
     return transcribedText
 
+#Extract characters from array into a string variable
+def arrayToString(textArray):
+    str1 = ""
+    for x in textArray:
+        str1 = str1 + x
+    return markdownSyntax(str1)
+
+#Function to properly format new lines
+def markdownSyntax(str1):
+    x = 0
+    while x < len(str1):
+        index1 = str1.find('\n', x)
+        index2 = str1.find('\n', index1 + 1)
+        if index1 == -1:
+            break
+        elif index1 - index2 == -1:
+            x = index1 + 2
+        else:
+            str2 = str1[:index1] + '\n' + str1[index1:]
+            str1 = str2
+            x = index1 + 2
+    return str1
 
 # Main driver code
 if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
