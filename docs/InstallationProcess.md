@@ -164,9 +164,9 @@ running the Textify bot:
     it does not exist)
 
   - `TESSERACT\_PATH` – OS path to the Tesseract executable. Note that
-    since file paths in Windows use the `\\` character, these separators
+    since file paths in Windows use the `\` character, these separators
     must be escaped. The most common setting for this option is likely
-    to be `'C:\\\\Program Files\\\\Tesseract-OCR\\\\tesseract.exe'`. The
+    to be `'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'`. The
     actual location should be identified during installation of
     Tesseract.
 
