@@ -1,4 +1,4 @@
-Textify Installation/Deployment Procedure
+# Textify Installation/Deployment Procedure
 
 # Introduction
 
