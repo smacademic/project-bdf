@@ -115,6 +115,10 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
                 print("WARNING: HTTPError when downloading " + imageURL + ":\n")
                 print(str(e) + '\n')
                 transcribedText = "HTTPError when downloading"
+            except ValueError as e:
+                print("Unknown URL type: " + imageURL + ":\n")
+                print(str(e) + '\n')
+                transcribedText = "Unknown URL type"
     return transcribedText
 
 #Extract characters from array into a string variable
