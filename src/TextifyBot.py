@@ -126,23 +126,37 @@ def arrayToString(textArray):
     str1 = ""
     for x in textArray:
         str1 = str1 + x
-    return markdownSyntax(str1)
+    return escapeMarkdown(str1)
 
 #Function to properly format new lines
-def markdownSyntax(str1):
-    x = 0
-    while x < len(str1):
-        index1 = str1.find('\n', x)
-        index2 = str1.find('\n', index1 + 1)
-        if index1 == -1:
-            break
-        elif index1 - index2 == -1:
-            x = index1 + 2
+def escapeMarkdown(str1):
+    markdownSyntax = ['#','*','_','\n']
+    newString = ""
+    for char in markdownSyntax:
+        if char == '\n':
+            x = 0
+            while x < len(str1):
+                index1 = str1.find(char, x)
+                index2 = str1.find(char, index1 + 1)
+                if index1 == -1:
+                    break
+                elif index1 - index2 == -1:
+                    x = index1 + 2
+                else:
+                    newString = str1[:index1] + char + str1[index1:]
+                    str1 = newString
+                    x = index1 + 2
         else:
-            str2 = str1[:index1] + '\n' + str1[index1:]
-            str1 = str2
-            x = index1 + 2
-    return str1
+            x = 0
+            while x < len(str1):
+                index1 = str1.find(char, x)
+                if index1 == -1:
+                    break
+                else:
+                    newString = str1[:index1] + '\\' + str1[index1:]
+                    str1 = newString
+                    x = index1 + 2
+    return newString
 
 # Main driver code
 if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
