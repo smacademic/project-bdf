@@ -96,6 +96,9 @@ def improveImage(imagePath):
 
 def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
     transcribedText = []
+    urlCounter = 0
+    header = "\n  **Transcribed text from image "
+
     for imageURL in imagesToDL:
         imageURL = imageURL.rstrip('/')
 
@@ -109,6 +112,9 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
             try:
                 urllib.request.urlretrieve(imageURL, imagePath)
                 imageText = tesseractTranscribe(imagePath)
+                urlCounter +=1
+                imageHeader = header + str(urlCounter) + '** \n'
+                transcribedText.append(imageHeader)
                 transcribedText.append(imageText)
                 os.remove(imagePath)
             except urllib.error.HTTPError as e:
@@ -150,3 +156,4 @@ if __name__ == '__main__': # This if statement guards this code from being execu
     while True:
         processUsernameMentions(bot)
         time.sleep(5)
+
