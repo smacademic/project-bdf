@@ -102,7 +102,7 @@ def improveImage(imagePath):
 
 def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
     transcribedText = []
-    transcriptionSpacing = "\n  ----------------------------  \n"
+    transcriptionSpacing = "\n---\n"
 
     for imageURL in imagesToDL:
         imageURL = imageURL.rstrip('/')
