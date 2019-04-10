@@ -11,6 +11,12 @@ import PIL
 import pytesseract
 from PIL import Image
 import time
+# The following are exceptions that are thrown when there are network issues
+from socket import gaierror
+from urllib3.exceptions import NewConnectionError
+from urllib3.exceptions import MaxRetryError
+from requests.exceptions import ConnectionError
+from prawcore.exceptions import RequestException
 
 
 # Note: both WHITELIST and BLACKLIST are case insensitive; WHITELIST overrides
@@ -151,6 +157,9 @@ def markdownSyntax(str1):
 if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
     bot = botSetup.textify_login()
     while True:
-        processUsernameMentions(bot)
-        time.sleep(5)
-
+        try:
+            processUsernameMentions(bot)
+            time.sleep(5)
+        except(gaierror, NewConnectionError, MaxRetryError, ConnectionError, RequestException):
+            print("It looks like there is a network issue. Retrying in 30 seconds...")
+            time.sleep(30)
