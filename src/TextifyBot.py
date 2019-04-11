@@ -66,10 +66,21 @@ def processMention(mention):
             if CHECKER:
                 mention.reply("No URL(s) found")
     elif isinstance(mention.parent(), praw.models.Submission):
-        print('Submission to textify:')
-        print(mention.parent().url)
-        if CHECKER:
-            mention.reply(arrayToString(transcribeImages(urls)))
+        urls = botSetup.extractURL(mention.parent().url)
+        if urls != None:
+            print('URL(s) found:')
+            print(urls)
+            print('Text transcribed:')
+            result = transcribeImages(urls)
+            print(result)
+            if CHECKER:
+                if arrayToString(result) == '' or arrayToString(result) == ' ':
+                    mention.reply("Transcription was unable to identify any text within the image")
+                else:
+                    mention.reply(arrayToString(result))
+        else:
+            if CHECKER:
+                mention.reply("No URL(s) found")
 # - Post's subreddit must not be in blacklist
 # - Post's subreddit must be in whitelist if whitelist is not disabled by '*'
 def allowedToParse(postID):
