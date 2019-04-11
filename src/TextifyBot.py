@@ -96,20 +96,10 @@ def allowedToParse(postID):
 
 
 def tesseractTranscribe(imagePath):
-    image = PIL.Image.open(improveImage(imagePath))
+    image = PIL.Image.open(imagePath)
     pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
     return pytesseract.image_to_string(image)
-
-
-# Makes the given image larger to improve success of transcription
-def improveImage(imagePath):
-    image = Image.open(imagePath)
-    width = image.width
-    height = image.height
-    image = image.resize((width*2, height*2))
-    image.save(imagePath)
-    return imagePath
 
 
 def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
