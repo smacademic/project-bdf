@@ -55,12 +55,13 @@ def processMention(mention):
             print('URL(s) found:')
             print(urls)
             print('Text transcribed:')
-            print(transcribeImages(urls))
+            result = transcribeImages(urls)
+            print(result)
             if CHECKER:
-                if arrayToString(transcribeImages(urls)) == '' or arrayToString(transcribeImages(urls)) == ' ':
+                if arrayToString(result) == '' or arrayToString(result) == ' ':
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
-                    mention.reply(arrayToString(transcribeImages(urls)))
+                    mention.reply(arrayToString(result))
         else:
             if CHECKER:
                 mention.reply("No URL(s) found")
