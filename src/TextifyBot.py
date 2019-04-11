@@ -130,7 +130,7 @@ def arrayToString(textArray):
 
 #Function to properly format new lines
 def escapeMarkdown(str1):
-    markdownSyntax = ['#','*','_','\n']
+    markdownSyntax = ['#','*','_','+','\n']
     newString = ""
     for char in markdownSyntax:
         if char == '\n':
