@@ -102,6 +102,8 @@ def improveImage(imagePath):
 
 def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
     transcribedText = []
+    transcriptionSpacing = "\n---\n"
+
     for imageURL in imagesToDL:
         imageURL = imageURL.rstrip('/')
 
@@ -115,6 +117,7 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
             try:
                 urllib.request.urlretrieve(imageURL, imagePath)
                 imageText = tesseractTranscribe(imagePath)
+                transcribedText.append(transcriptionSpacing)
                 transcribedText.append(imageText)
                 os.remove(imagePath)
             except urllib.error.HTTPError as e:
