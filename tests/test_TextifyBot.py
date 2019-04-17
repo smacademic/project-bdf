@@ -22,16 +22,6 @@ def test_tesseractTranscribe():
     assert TextifyBot.tesseractTranscribe(images[3]) == \
     'Nearly all men can\nstand adversity,\nbut if you want to\ntest a man’s\ncharacter, give him\n\npower.\nGin, f, f\nChita Z (nce li\n\n[)sayingimages.com'
 
-def test_arrayToString():
-
-    testArrayOfText1 = ['Hello', ', I am',' coming for you']
-    testArrayOfText2 = ['Sample text ','to check and see if',' the function arrayToString() works as expected']
-    testArrayOfText3 = ['Checking to',' see if this function',' can turn an array or list of strings into one string']
-
-    assert TextifyBot.arrayToString(testArrayOfText1) == 'Hello, I am Calebe'
-    assert TextifyBot.arrayToString(testArrayOfText2) == 'Sample text to check and see if the function arrayToString() works as expected'
-    assert TextifyBot.arrayToString(testArrayOfText3) == 'Checking to see if this function can turn an array or '
-
 def test_escapeMarkdown():
 
     test1 = "Hello #I am Calebe"
