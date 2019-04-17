@@ -27,7 +27,7 @@ WHITELIST = ['BDFTest'] # list of subreddits where bot is allowed to transcribe
 BLACKLIST = [] # list of subreddits where bot is not allowed to transcribe posts
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-CHECKER = True # enables posting to Reddit
+CHECKER = False # enables posting to Reddit
 
 
 def processUsernameMentions(connection):

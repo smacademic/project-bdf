@@ -3,7 +3,6 @@ sys.path.append('..\\src')
 import botSetup
 
 def test_extractURL():
-    print("testing URL extraction")
     assert botSetup.extractURL('https://imgur.com/jfl3d8k.jpg') == ['https://imgur.com/jfl3d8k.jpg']
     assert botSetup.extractURL('https://imgur.com/jfl3d8k.png') == ['https://imgur.com/jfl3d8k.png']
     assert botSetup.extractURL('https://imgur.com/jfl3d8k.tif') == ['https://imgur.com/jfl3d8k.tif']
@@ -15,4 +14,3 @@ def test_extractURL():
     [https://google.com/fjkd.png](https://google.com/fjkd.png) Let me know what you think') == \
     ['https://google.com/fjkd.png']
     assert botSetup.extractURL('Hello my name is Brian, I am taking Devops this Spring 2019') == None
-    print("Testing Completed!")
