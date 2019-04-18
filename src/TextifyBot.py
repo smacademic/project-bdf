@@ -55,13 +55,13 @@ def processMention(mention):
             print('URL(s) found:')
             print(urls)
             print('Text transcribed:')
-            result = transcribeImages(urls)
+            result = escapeMarkdown(escapeEscapeSequence(arrayToString(transcribeImages(urls))))
             print(result)
             if CHECKER:
-                if arrayToString(result) == '' or arrayToString(result) == ' ':
+                if result == '' or result == ' ':
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
-                    mention.reply(arrayToString(result))
+                    mention.reply(result)
         else:
             if CHECKER:
                 mention.reply("No URL(s) found")
@@ -71,13 +71,13 @@ def processMention(mention):
             print('URL(s) found:')
             print(urls)
             print('Text transcribed:')
-            result = transcribeImages(urls)
+            result = escapeMarkdown(escapeEscapeSequence(arrayToString(transcribeImages(urls))))
             print(result)
             if CHECKER:
-                if arrayToString(result) == '' or arrayToString(result) == ' ':
+                if result == '' or result == ' ':
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
-                    mention.reply(arrayToString(result))
+                    mention.reply(result)
         else:
             if CHECKER:
                 mention.reply("No URL(s) found")
@@ -134,39 +134,43 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
 
 #Extract characters from array into a string variable
 def arrayToString(textArray):
-    str1 = ""
+    string = ""
     for x in textArray:
-        str1 = str1 + x
-    return escapeMarkdown(str1)
+        string = string + x
+    return string
 
 #Function to properly format new lines
-def escapeMarkdown(str1):
-    markdownSyntax = ['#','*','_','+','\n']
+def escapeMarkdown(text):
+    markdownSyntax = ['#','*','_','+','`']
     newString = ""
     for char in markdownSyntax:
-        if char == '\n':
-            x = 0
-            while x < len(str1):
-                index1 = str1.find(char, x)
-                index2 = str1.find(char, index1 + 1)
-                if index1 == -1:
-                    break
-                elif index1 - index2 == -1:
-                    x = index1 + 2
-                else:
-                    newString = str1[:index1] + char + str1[index1:]
-                    str1 = newString
-                    x = index1 + 2
-        else:
-            x = 0
-            while x < len(str1):
-                index1 = str1.find(char, x)
-                if index1 == -1:
-                    break
-                else:
-                    newString = str1[:index1] + '\\' + str1[index1:]
-                    str1 = newString
-                    x = index1 + 2
+        x = 0
+        while x < len(text):
+            index1 = text.find(char, x)
+            if index1 == -1:
+                break
+            else:
+                newString = text[:index1] + '\\' + text[index1:]
+                text = newString
+                x = index1 + 2
+    return newString
+
+def escapeEscapeSequence(text):
+    escapeSequences = ['\a','\b','\f','\n','\r','\t','\v','\\','\'','\"']
+    newString = ""
+    for char in escapeSequences:
+        x = 0
+        while x < len(text):
+            index1 = text.find(char, x)
+            index2 = text.find(char, index1 + 1)
+            if index1 == -1:
+                break
+            elif index1 - index2 == -1:
+                x = index1 + 2
+            else:
+                newString = text[:index1] + char + text[index1:]
+                text = newString
+                x = index1 + 2
     return newString
 
 # Main driver code
