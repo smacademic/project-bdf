@@ -11,6 +11,8 @@ import PIL
 import pytesseract
 from PIL import Image
 import time
+import math
+
 # The following are exceptions that are thrown when there are network issues
 from socket import gaierror
 from urllib3.exceptions import NewConnectionError
@@ -61,7 +63,7 @@ def processMention(mention):
                 if arrayToString(result) == '' or arrayToString(result) == ' ':
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
-                    mention.reply(arrayToString(result))
+                    makeReply(mention, result)
         else:
             if CHECKER:
                 mention.reply("No URL(s) found")
@@ -77,7 +79,7 @@ def processMention(mention):
                 if arrayToString(result) == '' or arrayToString(result) == ' ':
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
-                    mention.reply(arrayToString(result))
+                    makeReply(mention, result)
         else:
             if CHECKER:
                 mention.reply("No URL(s) found")
@@ -93,6 +95,29 @@ def allowedToParse(postID):
     else:
         return postID.subreddit.display_name.lower() in \
             (name.lower() for name in WHITELIST)
+
+def makeReply(mention, transcriptions):
+    rawTranscriptions = arrayToString(transcriptions)
+    response = escapeMarkdown(rawTranscriptions)
+
+    MAX_POST_LEN = 10000 # Reddit imposes a cap of 10000 characters for comments
+    HEADER_LEN = 21 # Length of "### Reply x of x:\n\n"
+    
+    if len(response) < MAX_POST_LEN:
+        mention.reply(response)
+    else:
+        numReplies = math.ceil(len(response) / (MAX_POST_LEN + HEADER_LEN))
+        currReplyNum = 1
+        while len(response) > MAX_POST_LEN - HEADER_LEN:
+            currReply = "### Reply " + str(currReplyNum) + " of " + str(numReplies) + ":\n\n"
+            currReply += response[0:MAX_POST_LEN - HEADER_LEN]
+            mention.reply(currReply)
+
+            response = response[MAX_POST_LEN - HEADER_LEN:]
+            currReplyNum += 1
+        currReply = "### Reply " + str(currReplyNum) + " of " + str(numReplies) + ":\n\n"
+        currReply += response
+        mention.reply(currReply)
 
 
 def tesseractTranscribe(imagePath):
@@ -137,7 +162,7 @@ def arrayToString(textArray):
     str1 = ""
     for x in textArray:
         str1 = str1 + x
-    return escapeMarkdown(str1)
+    return str1
 
 #Function to properly format new lines
 def escapeMarkdown(str1):
