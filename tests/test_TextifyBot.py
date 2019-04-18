@@ -1,16 +1,15 @@
 import sys
 sys.path.append('..\\src')
-sys.path.append('C:\\Users\\caleb\\Documents\\GitHub\\project-bdf\\src')
 
 import os
 import TextifyBot
 import pytest
 
 images = []
-images.append('C:\\Users\\caleb\\Documents\\GitHub\\project-bdf\\tests\\test_images\\6731168-6436413-image-m-33_1543384208967.jpg')
-images.append('C:\\Users\\caleb\\Documents\\GitHub\\project-bdf\\tests\\test_images\\DNQSG48UIAAeahT.jpg')
-images.append('C:\\Users\\caleb\\Documents\\GitHub\\project-bdf\\tests\\test_images\\sleeping-squidward-spongebob-squarepants-meme-main.jpg')
-images.append('C:\\Users\\caleb\\Documents\\GitHub\\project-bdf\\tests\\test_images\\abraham-lincoln-famous-quotes.jpg')
+images.append('test_images\\6731168-6436413-image-m-33_1543384208967.jpg')
+images.append('test_images\\DNQSG48UIAAeahT.jpg')
+images.append('test_images\\sleeping-squidward-spongebob-squarepants-meme-main.jpg')
+images.append('test_images\\abraham-lincoln-famous-quotes.jpg')
 @pytest.mark.parametrize("transcribeInput,transcribeExpected",
     [
         (images[0],'Me leaving the pot in the sink because\n“it needs to soak”'),
