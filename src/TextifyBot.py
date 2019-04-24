@@ -75,7 +75,6 @@ def processMention(mention):
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
                     makeReply(mention, result)
-
     elif isinstance(mention.parent(), praw.models.Submission):
         urls = botSetup.extractURL(mention.parent().url)
         if urls != None:
@@ -92,7 +91,10 @@ def processMention(mention):
         else:
             if CHECKER:
                 mention.reply("No URL(s) found")
-# - Post's subreddit must not be in blacklist
+
+
+# - Post's subreddit must not be NSFW (+18)
+# - Post's subreddit must not be in blacklist OR
 # - Post's subreddit must be in whitelist if whitelist is not disabled by '*'
 def allowedToParse(postID):
     if postID.subreddit.over18:
@@ -104,6 +106,7 @@ def allowedToParse(postID):
     else:
         return postID.subreddit.display_name.lower() in \
             (name.lower() for name in WHITELIST)
+
 
 def makeReply(mention, transcriptions):
     rawTranscriptions = arrayToString(transcriptions)
@@ -166,8 +169,10 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
                 transcribedText = "Unknown URL type"
     return transcribedText
 
+
 def describeImages(imagesToProcess):
     return [""]
+
 
 #Extract characters from array into a string variable
 def arrayToString(textArray):
@@ -175,6 +180,7 @@ def arrayToString(textArray):
     for x in textArray:
         str1 = str1 + x
     return str1
+
 
 #Function to properly format new lines
 def escapeMarkdown(str1):
@@ -205,6 +211,7 @@ def escapeMarkdown(str1):
                     str1 = newString
                     x = index1 + 2
     return newString
+
 
 # Main driver code
 if __name__ == '__main__': # This if statement guards this code from being executed when this file is imported
