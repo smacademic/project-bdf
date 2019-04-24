@@ -30,6 +30,7 @@ BLACKLIST = [] # list of subreddits where bot is not allowed to transcribe posts
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 CHECKER = True # enables posting to Reddit
+CV_KEYWORD = "!describe" # keyword for providing a description of an image
 
 
 def processUsernameMentions(connection):
@@ -53,7 +54,17 @@ def processMention(mention):
         urls = botSetup.extractURL(mention.parent().body)
         print('Comment to textify:')
         print(mention.parent().body)
-        if urls != None:
+        if urls == None:
+            if CHECKER:
+                mention.reply("No URL(s) found")
+        elif CV_KEYWORD in mention.body().lower():
+            print('URL(s) found:')
+            print(urls)
+            result = describeImages(urls)
+            print("Descriptions:")
+            print (result)
+            makeReply(mention, result)
+        else:
             print('URL(s) found:')
             print(urls)
             print('Text transcribed:')
@@ -64,9 +75,7 @@ def processMention(mention):
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
                     makeReply(mention, result)
-        else:
-            if CHECKER:
-                mention.reply("No URL(s) found")
+
     elif isinstance(mention.parent(), praw.models.Submission):
         urls = botSetup.extractURL(mention.parent().url)
         if urls != None:
@@ -156,6 +165,9 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
                 print(str(e) + '\n')
                 transcribedText = "Unknown URL type"
     return transcribedText
+
+def describeImages(imagesToProcess):
+    return [""]
 
 #Extract characters from array into a string variable
 def arrayToString(textArray):
