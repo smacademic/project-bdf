@@ -6,9 +6,12 @@
 import os
 import urllib.request
 import botSetup
+import authentication
 import praw
 import PIL
 import pytesseract
+import json
+import requests
 from PIL import Image
 import time
 import math
@@ -171,7 +174,30 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
 
 
 def describeImages(imagesToProcess):
-    return [""]
+    cvEndPoint = authentication.cvBaseURL + "/vision/v2.0/analyze"
+    callHeader = {"Ocp-Apim-Subscription-Key": authentication.cvKey1}
+    callParams = {'visualFeatures': "Categories,Description,Color"}
+
+    imageDescriptions = []
+
+    for imageURL in imagesToProcess:
+        imageURL = imageURL.rstrip('/')
+        callData = {"url": imageURL}
+
+        response = requests.post(cvEndPoint, headers=callHeader, params=callParams, json=callData)
+        response.raise_for_status()
+
+        result = response.json()
+        print("Computer Vision result: " + str(json.dumps(result)))
+
+        imageCaption = result["description"]["captions"][0]["text"]
+        captionConfidence = result["description"]["captions"][0]["confidence"]
+        message = "I am " + str(captionConfidence * 100) \
+          + "% sure that this is:" + imageCaption + "\n"
+
+        imageDescriptions.append(message)
+
+    return imageDescriptions
 
 
 #Extract characters from array into a string variable
