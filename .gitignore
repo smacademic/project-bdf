@@ -7,3 +7,6 @@ __pycache__/
 
 # Login credentials
 src/authentication.py
+
+#google generated cookies
+.google-cookie
