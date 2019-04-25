@@ -20,6 +20,20 @@ images.append('test_images\\abraham-lincoln-famous-quotes.jpg')
 def test_tesseractTranscribe(transcribeInput, transcribeExpected):
     assert TextifyBot.tesseractTranscribe(transcribeInput) == transcribeExpected
 
+list1 = ['Hello',' I',' am a student']
+list2 = ['I\'m ready, ', 'I\'m ready, ', 'I am ready!']
+list3 = ['one ', 'two ', 'three ', 'four ', 'five']
+list4 = ['The purpose of this string is to', ' test whether the arrayToString() function is working as expected']
+@pytest.mark.parametrize("inputList,expectedString",
+    [
+        (list1, "Hello I am a student"),
+        (list2, "I\'m ready, I\'m ready, I am ready!"),
+        (list3, "one two three four five"),
+        (list4, "The purpose of this string is to test whether the arrayToString() function is working as expected")
+    ])
+def test_arrayToString(inputList, expectedString):
+    assert TextifyBot.arrayToString(inputList) == expectedString
+
 @pytest.mark.parametrize("markdownInput,markdownExpected",
     [
         ('Hello #I am Calebe', 'Hello \\#I am Calebe'),
