@@ -15,7 +15,9 @@ import requests
 from PIL import Image
 import time
 import math
+import TextifyTranslate
 from googlesearch import search
+
 
 # The following are exceptions that are thrown when there are network issues
 from socket import gaierror
@@ -34,8 +36,10 @@ BLACKLIST = [] # list of subreddits where bot is not allowed to transcribe posts
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 CHECKER = True # enables posting to Reddit
+TRANSLATE_FLAG = '!Translation'
 CV_KEYWORD = "!describe" # keyword for providing a description of an image
 TWITTER_FLAG = '!Twitter';
+
 
 
 def processUsernameMentions(connection):
@@ -103,10 +107,14 @@ def processMention(mention):
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
                     makeReply(mention, result)
+        else:
+            if CHECKER:
+                mention.reply("No URL(s) found")
 
-
+# - Post's subreddit must not be in blacklist
 # - Post's subreddit must not be NSFW (+18)
 # - Post's subreddit must not be in blacklist OR
+
 # - Post's subreddit must be in whitelist if whitelist is not disabled by '*'
 def allowedToParse(postID):
     if postID.subreddit.over18:
@@ -132,6 +140,13 @@ def makeReply(mention, transcriptions):
         else:
             print("unable to find link")
             response = response + '\n\nUnable to find associated twitter link'
+                
+    #check for translation flag
+    if mention.body.find(TRANSLATE_FLAG) >=0:
+        for langCode in TextifyTranslate.LANGUAGE_CODE:
+            if mention.body.find(langCode, 29) >=0:
+                print("translating to : " + langCode )
+                response = TextifyTranslate.translate(response, langCode)
 
     MAX_POST_LEN = 10000 # Reddit imposes a cap of 10000 characters for comments
     HEADER_LEN = 21 # Length of "### Reply x of x:\n\n"
