@@ -18,9 +18,6 @@ LANGUAGE_CODE = ['af','ar','bn','bs','bg','yue','ca','zh-Hans','zh-Hant','hr', \
 
 def translate(textToTranslate, desiredLanguage):
 
-    #textToTranslate = 'hello'
-    #desiredLanguage = 'pt'
-
     base_url = 'https://api.cognitive.microsofttranslator.com'
     path = '/translate?api-version=3.0'
     params = '&to=' + desiredLanguage
