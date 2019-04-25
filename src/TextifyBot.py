@@ -119,8 +119,7 @@ def allowedToParse(postID):
 
 
 def makeReply(mention, transcriptions):
-    rawTranscriptions = arrayToString(transcriptions)
-    response = escapeMarkdown(rawTranscriptions)
+    response = arrayToString(transcriptions)
 
     MAX_POST_LEN = 10000 # Reddit imposes a cap of 10000 characters for comments
     HEADER_LEN = 21 # Length of "### Reply x of x:\n\n"
@@ -166,6 +165,7 @@ def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
             try:
                 urllib.request.urlretrieve(imageURL, imagePath)
                 imageText = tesseractTranscribe(imagePath)
+                imageText = escapeMarkdown(imageText)
                 transcribedText.append(transcriptionSpacing)
                 transcribedText.append(imageText)
                 os.remove(imagePath)
@@ -187,6 +187,7 @@ def describeImages(imagesToProcess):
 
     imageDescriptions = []
 
+    currentImageNumber = 1
     for imageURL in imagesToProcess:
         imageURL = imageURL.rstrip('/')
         callData = {"url": imageURL}
@@ -197,10 +198,17 @@ def describeImages(imagesToProcess):
         result = response.json()
         print("Computer Vision result: " + str(json.dumps(result)))
 
-        imageCaption = result["description"]["captions"][0]["text"]
-        captionConfidence = result["description"]["captions"][0]["confidence"]
-        message = "I am " + str(captionConfidence * 100) \
-          + "% sure that this is:" + imageCaption + "\n"
+        if len(result["description"]["captions"]) > 0:
+            imageCaption = result["description"]["captions"][0]["text"]
+            captionConfidence = result["description"]["captions"][0]["confidence"]
+            message = "I am " + str(captionConfidence * 100) \
+              + "% sure that this is: **" + imageCaption + "**\n"
+        else:
+            message = "Sorry, I could not describe that image\n"
+
+        if len(imagesToProcess) > 1:
+            message = "- Image " + str(currentImageNumber) + ": " + message
+            currentImageNumber += 1
 
         imageDescriptions.append(message)
 
