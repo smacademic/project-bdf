@@ -60,12 +60,12 @@ def processMention(mention):
         if urls == None:
             if CHECKER:
                 mention.reply("No URL(s) found")
-        elif CV_KEYWORD in mention.body().lower():
+        elif CV_KEYWORD in mention.body.lower():
             print('URL(s) found:')
             print(urls)
             result = describeImages(urls)
             print("Descriptions:")
-            print (result)
+            print(result)
             makeReply(mention, result)
         else:
             print('URL(s) found:')
@@ -80,7 +80,17 @@ def processMention(mention):
                     makeReply(mention, result)
     elif isinstance(mention.parent(), praw.models.Submission):
         urls = botSetup.extractURL(mention.parent().url)
-        if urls != None:
+        if urls == None:
+            if CHECKER:
+                mention.reply("No URL(s) found")
+        elif CV_KEYWORD in mention.body.lower():
+            print('URL(s) found:')
+            print(urls)
+            result = describeImages(urls)
+            print("Descriptions:")
+            print(result)
+            makeReply(mention, result)
+        else:
             print('URL(s) found:')
             print(urls)
             print('Text transcribed:')
@@ -91,9 +101,6 @@ def processMention(mention):
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
                     makeReply(mention, result)
-        else:
-            if CHECKER:
-                mention.reply("No URL(s) found")
 
 
 # - Post's subreddit must not be NSFW (+18)
