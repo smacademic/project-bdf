@@ -12,6 +12,7 @@ import pytesseract
 from PIL import Image
 import time
 import math
+import TextifyTranslate
 
 # The following are exceptions that are thrown when there are network issues
 from socket import gaierror
@@ -30,6 +31,7 @@ BLACKLIST = [] # list of subreddits where bot is not allowed to transcribe posts
 IMAGE_DIR = 'images/' # directory to temporarily download images to
 TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 CHECKER = True # enables posting to Reddit
+TRANSLATE_FLAG = '!Translation'
 
 
 def processUsernameMentions(connection):
@@ -83,6 +85,7 @@ def processMention(mention):
         else:
             if CHECKER:
                 mention.reply("No URL(s) found")
+
 # - Post's subreddit must not be in blacklist
 # - Post's subreddit must be in whitelist if whitelist is not disabled by '*'
 def allowedToParse(postID):
@@ -99,6 +102,12 @@ def allowedToParse(postID):
 def makeReply(mention, transcriptions):
     rawTranscriptions = arrayToString(transcriptions)
     response = escapeMarkdown(rawTranscriptions)
+
+    if mention.body.find(TRANSLATE_FLAG) >=0:
+        for langCode in TextifyTranslate.LANGUAGE_CODE:
+            if mention.body.find(langCode, 29) >=0:
+                print("translating to : " + langCode )
+                response = TextifyTranslate.translate(response, langCode)
 
     MAX_POST_LEN = 10000 # Reddit imposes a cap of 10000 characters for comments
     HEADER_LEN = 21 # Length of "### Reply x of x:\n\n"

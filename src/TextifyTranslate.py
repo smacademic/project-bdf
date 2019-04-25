@@ -6,31 +6,37 @@
 # https://docs.microsoft.com/en-us/azure/cognitive-services/translator/quickstart-python-translate
 
 import requests
-import uuid
 import json
 import authentication
 
-subscriptionKey = authentication.ttKey1
-textToTranslate = 'Hi, I am a computer science student at Western Connecticut State University!'
-desiredLanguage = 'pt'
+LANGUAGE_CODE = ['af','ar','bn','bs','bg','yue','ca','zh-Hans','zh-Hant','hr', \
+                'cs','da','nl','en','et','fj','fil','fi','fr','de','el','ht', \
+                'he','hi','mww','hu','is','id','it','ja','sw','tlh','tlh-Qaak', \
+                'ko','lv','lt','mg','ms','mt','nb','fa','pl','pt','otq','ro', \
+                'ru','sm','sr-Cyrl','sr-Latn','sk','sl','es','sv','ty','ta','te', \
+                'th','to','tr','uk','ur','vi','cy','yua']
 
-base_url = 'https://api.cognitive.microsofttranslator.com'
-path = '/translate?api-version=3.0'
-params = '&to=' + desiredLanguage
-constructed_url = base_url + path + params
+def translate(textToTranslate, desiredLanguage):
 
-headers = {
-    'Ocp-Apim-Subscription-Key': subscriptionKey,
-    'Content-type': 'application/json',
-    'X-ClientTraceId': str(uuid.uuid4())
-}
+    #textToTranslate = 'hello'
+    #desiredLanguage = 'pt'
 
-body = [{
-    'text' : textToTranslate
-}]
+    base_url = 'https://api.cognitive.microsofttranslator.com'
+    path = '/translate?api-version=3.0'
+    params = '&to=' + desiredLanguage
+    constructed_url = base_url + path + params
 
-request = requests.post(constructed_url, headers=headers, json=body)
-response = request.json()
+    headers = {
+        'Ocp-Apim-Subscription-Key': authentication.ttKey1,
+        'Content-type': 'application/json',
+    }
 
-translatedText = response[0]['translations'][0]['text']
-print(translatedText)
+    body = [{
+        'text' : textToTranslate
+    }]
+
+    request = requests.post(constructed_url, headers=headers, json=body)
+    response = request.json()
+
+    translatedText = response[0]['translations'][0]['text']
+    return translatedText
