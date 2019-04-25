@@ -4,3 +4,5 @@ pytesseract==0.2.6
 Pillow==5.4.1
 pytest==4.4.0
 requests==2.21.0
+beautifulsoup4==4.7.1
+google==2.0.2
