@@ -38,7 +38,7 @@ TESSERACT_PATH = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 CHECKER = True # enables posting to Reddit
 TRANSLATE_FLAG = '!Translation'
 CV_KEYWORD = "!describe" # keyword for providing a description of an image
-TWITTER_FLAG = '!Twitter';
+TWITTER_FLAG = '!Twitter'
 
 
 
@@ -107,9 +107,6 @@ def processMention(mention):
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
                     makeReply(mention, result)
-        else:
-            if CHECKER:
-                mention.reply("No URL(s) found")
 
 # - Post's subreddit must not be in blacklist
 # - Post's subreddit must not be NSFW (+18)
