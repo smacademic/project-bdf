@@ -107,9 +107,6 @@ def processMention(mention):
                     mention.reply("Transcription was unable to identify any text within the image")
                 else:
                     makeReply(mention, result)
-        else:
-            if CHECKER:
-                mention.reply("No URL(s) found")
 
 # - Post's subreddit must not be in blacklist
 # - Post's subreddit must not be NSFW (+18)
@@ -140,7 +137,7 @@ def makeReply(mention, transcriptions):
         else:
             print("unable to find link")
             response = response + '\n\nUnable to find associated twitter link'
-                
+
     #check for translation flag
     if mention.body.find(TRANSLATE_FLAG) >=0:
         for langCode in TextifyTranslate.LANGUAGE_CODE:
