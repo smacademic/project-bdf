@@ -137,7 +137,7 @@ def makeReply(mention, transcriptions):
         else:
             print("unable to find link")
             response = response + '\n\nUnable to find associated twitter link'
-                
+
     #check for translation flag
     if mention.body.find(TRANSLATE_FLAG) >=0:
         for langCode in TextifyTranslate.LANGUAGE_CODE:
