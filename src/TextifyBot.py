@@ -109,10 +109,9 @@ def processMention(mention):
                 else:
                     makeReply(mention, result)
 
-# - Post's subreddit must not be in blacklist
+
 # - Post's subreddit must not be NSFW (+18)
 # - Post's subreddit must not be in blacklist OR
-
 # - Post's subreddit must be in whitelist if whitelist is not disabled by '*'
 def allowedToParse(postID):
     if postID.subreddit.over18:
@@ -170,7 +169,7 @@ def tesseractTranscribe(imagePath):
     image = PIL.Image.open(imagePath)
     pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
-    return pytesseract.image_to_string(image)
+    return pytesseract.image_to_string(image, lang="eng+spa+por+jpn")
 
 
 def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
@@ -218,18 +217,29 @@ def describeImages(imagesToProcess):
         callData = {"url": imageURL}
 
         response = requests.post(cvEndPoint, headers=callHeader, params=callParams, json=callData)
-        response.raise_for_status()
-
         result = response.json()
-        print("Computer Vision result: " + str(json.dumps(result)))
+        message = ""
 
-        if len(result["description"]["captions"]) > 0:
-            imageCaption = result["description"]["captions"][0]["text"]
-            captionConfidence = result["description"]["captions"][0]["confidence"]
-            message = "I am " + str(captionConfidence * 100) \
-              + "% sure that this is: **" + imageCaption + "**\n"
+        if response.status_code == 200:
+            result = response.json()
+            print("Computer Vision result: " + str(json.dumps(result)))
+            if len(result["description"]["captions"]) > 0:
+                imageCaption = result["description"]["captions"][0]["text"]
+                captionConfidence = result["description"]["captions"][0]["confidence"]
+                message = "I am " + str(captionConfidence * 100) \
+                + "% sure that this is: **" + imageCaption + "**\n"
+            else:
+                message = "Sorry, that image was too difficult for me to describe\n"
+        elif response.status_code >= 400 and response.status_code  <= 499:
+            print("Client error from CV attempt:")
+            print(result)
+            message = "Sorry, something was wrong with the request"
+            message += ": " + result["message"] + "\n"
         else:
-            message = "Sorry, I could not describe that image\n"
+            print("Server error from CV attempt:")
+            print(result)
+            message = "Sorry, something went wrong when processing the image"
+            message += ": " + result["message"] + "\n"
 
         if len(imagesToProcess) > 1:
             message = "- Image " + str(currentImageNumber) + ": " + message
