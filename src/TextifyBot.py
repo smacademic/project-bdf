@@ -233,12 +233,12 @@ def describeImages(imagesToProcess):
             print("Client error from CV attempt:")
             print(result)
             message = "Sorry, something was wrong with the request"
-            message += ": " + result["message"]
+            message += ": " + result["message"] + "\n"
         else:
             print("Server error from CV attempt:")
             print(result)
             message = "Sorry, something went wrong when processing the image"
-            message += ": " + result["message"]
+            message += ": " + result["message"] + "\n"
 
         if len(imagesToProcess) > 1:
             message = "- Image " + str(currentImageNumber) + ": " + message
