@@ -168,7 +168,7 @@ def tesseractTranscribe(imagePath):
     image = PIL.Image.open(imagePath)
     pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
 
-    return pytesseract.image_to_string(image)
+    return pytesseract.image_to_string(image, lang="eng+spa+por+jpn")
 
 
 def transcribeImages(imagesToDL): # download and transcribe a list of image URLs
@@ -229,10 +229,6 @@ def describeImages(imagesToProcess):
                 + "% sure that this is: **" + imageCaption + "**\n"
             else:
                 message = "Sorry, that image was too difficult for me to describe\n"
-
-            if len(imagesToProcess) > 1:
-                message = "- Image " + str(currentImageNumber) + ": " + message
-                currentImageNumber += 1
         elif response.status_code >= 400 and response.status_code  <= 499:
             print("Client error from CV attempt:")
             print(result)
@@ -244,6 +240,9 @@ def describeImages(imagesToProcess):
             message = "Sorry, something went wrong when processing the image"
             message += ": " + result["message"]
 
+        if len(imagesToProcess) > 1:
+            message = "- Image " + str(currentImageNumber) + ": " + message
+            currentImageNumber += 1
 
         imageDescriptions.append(message)
 
