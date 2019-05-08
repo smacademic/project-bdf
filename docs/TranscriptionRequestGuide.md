@@ -23,7 +23,7 @@ Steps for requesting a transcription with a link to the tweet:
 
 ## Transcribe and translate
 
-Steps for requesting a translated transciption
+Steps for requesting a translated transcription
 
 - Find a submission/post that needs transcription
   into another language
