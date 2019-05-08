@@ -16,6 +16,7 @@ LANGUAGE_CODE = ['af','ar','bn','bs','bg','yue','ca','zh-Hans','zh-Hant','hr', \
                 'ru','sm','sr-Cyrl','sr-Latn','sk','sl','es','sv','ty','ta','te', \
                 'th','to','tr','uk','ur','vi','cy','yua']
 
+
 def translate(textToTranslate, desiredLanguage):
 
     base_url = 'https://api.cognitive.microsofttranslator.com'

@@ -140,10 +140,12 @@ def makeReply(mention, transcriptions):
 
     #check for translation flag
     if mention.body.find(TRANSLATE_FLAG) >=0:
+        body = mention.body.split()
         for langCode in TextifyTranslate.LANGUAGE_CODE:
-            if mention.body.find(langCode, 29) >=0:
+            #if (mention.body.find(langCode) >=0) or (mention.body.find(langCode.rstrip()) >=0):
+            if (body.count(langCode) > 0):
                 print("translating to : " + langCode )
-                response = TextifyTranslate.translate(response, langCode)
+                response = TextifyTranslate.translate(response, langCode.strip())
 
     MAX_POST_LEN = 10000 # Reddit imposes a cap of 10000 characters for comments
     HEADER_LEN = 21 # Length of "### Reply x of x:\n\n"
