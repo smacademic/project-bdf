@@ -1,6 +1,7 @@
 # Textify - An Unofficial Reddit Transcription Bot
 
-Textify transcribes text from images posted on Reddit on request. The images may be part of a post on a subreddit, or linked to within a comment. The bot will reply with a comment containing an attempted transcription of the text contained with the image.
+Textify transcribes text from images posted on Reddit on request. The images may be part of a post on a subreddit, or linked to within a comment. The bot will reply with a comment containing an attempted transcription of the text contained with the image. [Here](https://github.com/smacademic/project-bdf/blob/dev/docs/TranscriptionRequestGuide.md) is the guide for requesting
+transcriptions from Textify.
 
 This Reddit Bot is a part of a project created by 3 students in CS 298-01 at Western Connecticut State University. Development is currently underway and the project is still in its alpha stages. Transcriptions are performed, but the results are not formatted well and often have errors.
 
