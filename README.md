@@ -45,3 +45,17 @@ Reddit has a relatively generous public API and is friendly towards non-maliciou
 ## Installation
 
 The installation/deployment procedure for both Windows and Ubuntu is detailed [here](https://github.com/smacademic/project-bdf/blob/dev/docs/InstallationProcess.md).
+
+## System Architecture
+
+![System Architecture Diagram](https://i.imgur.com/kMBMQHV.png)
+
+  1.User A posts an image to Reddit
+
+  2.User B (who may have visual impairments) posts a comment requesting Textify to process the image
+
+  3.The Textify server receives a notification. The image is then processed, utilizing Microsoft Azure to describe an image or translate text (if requested)
+
+  4.The Textify server posts a reply containing the transcription to user B’s comment
+
+  5.User B receives a notification that Textify has responded with a transcription
