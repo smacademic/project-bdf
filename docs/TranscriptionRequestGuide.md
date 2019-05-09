@@ -23,7 +23,7 @@ Steps for requesting a transcription with a link to the tweet:
 
 ## Transcribe and translate
 
-Steps for requesting a translated transcription
+Steps for requesting a translated transcription:
 
 - Find a submission/post that needs transcription
   into another language
@@ -39,7 +39,7 @@ You can find the langauge codes [here](https://docs.microsoft.com/en-us/azure/co
 
 ## Image description
 
-Steps for requesting an image description
+Steps for requesting an image description:
 
 - Find a submission/post to describe
 - Mention Textify by typing the username `u/TextifyReddit`
