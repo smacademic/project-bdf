@@ -1,6 +1,7 @@
 # Textify - An Unofficial Reddit Transcription Bot
 
-Textify transcribes text from images posted on Reddit on request. The images may be part of a post on a subreddit, or linked to within a comment. The bot will reply with a comment containing an attempted transcription of the text contained with the image.
+Textify transcribes text from images posted on Reddit on request. The images may be part of a post on a subreddit, or linked to within a comment. The bot will reply with a comment containing an attempted transcription of the text contained with the image. [Here](https://github.com/smacademic/project-bdf/blob/dev/docs/TranscriptionRequestGuide.md) is the guide for requesting
+transcriptions from Textify.
 
 This Reddit Bot is a part of a project created by 3 students in CS 298-01 at Western Connecticut State University. Development is currently underway and the project is still in its alpha stages. Transcriptions are performed, but the results are not formatted well and often have errors.
 
@@ -22,7 +23,12 @@ Outside collaboration is not currently expected as the project is part of a majo
 3. Generate a post based on the analyzed content. The post should have some markup other than text (hashtags, URLs, Markdown, etc)
 4. Post to Reddit. It is possible that external issues may prevent this from happening, in which case a simulated post is sufficient.
 
-The project as currently implemented meets requirements 1, 2, and 4. Requirement 3 is partially met (a post is generated, but it does not have any markup). This requirement can be fully met with some extentions to the project, such as identifying any URLs and turning them into hyperlinks, or possibly idenitying that the picture is a screenshot of a Twitter post and linking to the original post on Twitter.
+The project as currently implemented meets all the requirements.
+
+**Extensions:**
+- Translation: Converting any found language to a specified langauge through the use of Microsoft Azure's Translator Text
+- Image description: Depict an image along with the confidence percentage through the use of Microsoft Azure's Computer Vision
+- Locating tweet: Search the internet for possible tweet through the use of Google
 
 ### Why we chose Reddit
 
