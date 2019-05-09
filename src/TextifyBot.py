@@ -152,8 +152,9 @@ def makeReply(mention, transcriptions):
 
     #check for translation flag
     if mention.body.find(TRANSLATE_FLAG) >=0:
+        body = mention.body.split()
         for langCode in TextifyTranslate.LANGUAGE_CODE:
-            if mention.body.find(langCode, 29) >=0:
+            if (body.count(langCode) > 0):
                 print("translating to : " + langCode )
                 response = TextifyTranslate.translate(response, langCode)
 
