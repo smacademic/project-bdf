@@ -62,6 +62,12 @@ def processMention(mention):
     if isinstance(mention.parent(), praw.models.Comment) and \
     allowedToParse(mention.parent()):
         urls = botSetup.extractURL(mention.parent().body)
+        print('Subreddit :')
+        print(mention.parent().subreddit.display_name)
+        print('Submission title :')
+        print(mention.parent().title)
+        print('Comment Author:')
+        print (mention.parent().author)
         print('Comment to textify:')
         print(mention.parent().body)
         if urls == None:
@@ -87,6 +93,12 @@ def processMention(mention):
                     makeReply(mention, result)
     elif isinstance(mention.parent(), praw.models.Submission):
         urls = botSetup.extractURL(mention.parent().url)
+        print('Subreddit :')
+        print(mention.parent().subreddit.display_name)
+        print('Submission title :')
+        print(mention.parent().title)
+        print('Comment Author:')
+        print (mention.parent().author)
         if urls == None:
             if CHECKER:
                 mention.reply("No URL(s) found")
