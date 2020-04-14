@@ -1,7 +1,7 @@
 # Textify Reddit
 praw==6.1.1
 pytesseract==0.2.6
-Pillow==5.4.1
+Pillow==6.2.2
 pytest==4.4.0
 requests==2.21.0
 beautifulsoup4==4.7.1

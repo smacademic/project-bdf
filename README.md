@@ -45,6 +45,8 @@ Reddit has a relatively generous public API and is friendly towards non-maliciou
 
 ## Installation
 
+**NOTE**: Due to potential security vulnerabilities the version of `pillow` used by the bot has been upgraded from `5.4.1` to `6.2.2`. This resolves the known vulnerabilities but is **untested**. Since this involves a change in the major version number, it is possible that breaking changes were introduced by this change.
+
 The installation/deployment procedure for both Windows and Ubuntu is detailed [here](https://github.com/smacademic/project-bdf/blob/dev/docs/InstallationProcess.md).
 
 ## System Architecture
